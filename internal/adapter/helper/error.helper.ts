@@ -2,8 +2,9 @@ import { randomUUID } from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 
 
-
+// Enumeration of custom error types for consistent error handling across the application
 export enum ErrorType {
+   // Each error type corresponds to a specific kind of error that can occur within the application
   ValidationError = 'VALIDATION_ERROR',
   RedisSetupError = 'REDIS_SETUP_ERROR',
   NoRecordError = 'NO_RECORD_FOUND_ERROR',
@@ -36,7 +37,7 @@ export enum ErrorType {
   Prohibited = 'PROHIBITED_ERROR',
 }
 
-
+// Mapping of ErrorTypes to HTTP status codes for appropriate HTTP response statuses
 
 const CustomError: Record<ErrorType, number> = {
   [ErrorType.ValidationError]: 400,
@@ -92,7 +93,7 @@ export function ErrorMessage(errorType: ErrorType, message: string): ErrorRespon
   return errorResponse;
 }
 
-
+// Custom error class extending the built-in Error class for application-specific errors
 export class AppError extends Error {
   statusCode: number;
   errorType: ErrorType;
@@ -116,7 +117,7 @@ export class AppError extends Error {
     // Set the prototype explicitly.
     Object.setPrototypeOf(this, AppError.prototype);
   }
-
+// Method to serialize the error object to JSON format for API responses
   toJSON() {
     return {
       statusCode: this.statusCode,

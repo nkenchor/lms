@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { IUserServicePort } from "../../port/service-port/user.service.port";
 import { ICreateUserDto } from '../../core/domain/dto/user.dto';
 import { logEvent } from '../middleware/log.middleware';
-import { AppError, ErrorType } from '../helper/error.helper';
+import { AppError } from '../helper/error.helper';
 
 export class UserController {
     constructor(private readonly userService: IUserServicePort) {}

@@ -17,8 +17,6 @@ export class AuthorRepository implements IAuthorRepositoryPort {
   }
 
 
-
-  
  
   async createAuthor(author: Author): Promise<Author> {
      // First, check if an author with the same first and last name already exists

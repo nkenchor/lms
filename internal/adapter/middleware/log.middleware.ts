@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 import os from 'os';
 import { v4 as uuidv4 } from 'uuid';
 
+// Interface for structured logging data
 interface LogData {
   timestamp: string;
   level: string;
@@ -28,13 +29,15 @@ interface LogData {
 
 const logDir = path.join(__dirname, '../../../../logs');
 
-// Ensure log directory exists
+/// Ensure the log directory exists; create it if it doesn't
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir);
 }
-
+// Logs request and response data to a file
 function logReqandRes(req: Request, res: Response, level: string, message: string | Record<string, any>): void {
   const timestamp = new Date().toISOString();
+    // Construct log data from request and response
+  // Includes comprehensive request/response details and system info
   const logData: LogData = {
     timestamp,
     level,
@@ -73,21 +76,21 @@ function logReqandRes(req: Request, res: Response, level: string, message: strin
         return acc;
     }, {} as Record<string, string>),
     
-    responseCookies: {}, // Set this if you're using cookie-parser middleware
-    responseBody: res.locals.body, // Assuming you store response data in res.locals
+    responseCookies: {}, 
+    responseBody: res.locals.body, 
     requestDuration: Date.now() - (res.locals.startTime || Date.now()), // Handle case when startTime is not set
     correlationId: Array.isArray(req.headers['x-correlation-id']) ? req.headers['x-correlation-id'][0] : (req.headers['x-correlation-id'] as string) || uuidv4(),
- // You can set this header in your requests to correlate logs
+ 
     logId: uuidv4(),
   };
 
-  
+  // Convert log data to a single string and append to a daily log file
   const logLine = JSON.stringify(logData);
 
   const logFilePath = `./logs/${logData.timestamp.split('T')[0]}.log`;
   fs.appendFileSync(logFilePath, `${logLine}\n`);
 }
-
+// Logs general events not tied to specific requests
 function logEvent(level: string, message: any): void {
     const timestamp = new Date().toISOString();
     const logData = {
@@ -103,10 +106,12 @@ function logEvent(level: string, message: any): void {
     const logFilePath = `./logs/${logData.timestamp.split('T')[0]}.log`;
     fs.appendFileSync(logFilePath, `${logLine}\n`);
 }
-
+// Middleware to capture and log response data
 function LogRequestMiddleware(req: Request, res: Response, next: NextFunction): void {
   res.locals.startTime = Date.now(); // Start measuring request duration
   logReqandRes(req, res, 'INFO', 'Incoming request');
+  // Overrides res.send to capture response body and log it
+    // Calls original res.send after logging
   next();
 }
 
@@ -126,7 +131,7 @@ function LogResponseMiddleware(req: Request, res: Response, next: NextFunction):
     next();
 }
   
-
+// Middleware for logging errors
 function LogErrorMiddleware(err: any, req: Request, res: Response, next: NextFunction): void {
   const errorData = {
     statusCode: res.statusCode || 500,
