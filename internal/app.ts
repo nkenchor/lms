@@ -31,6 +31,11 @@ import { borrowerRoutes } from './adapter/routes/borrower.routes';
 import { BorrowerService } from './core/service/borrower.service';
 import { bookTransactionRoutes } from './adapter/routes/book.transaction.routes';
 import { BookTransactionRepository } from './adapter/data-access/repository/book.transaction.repository';
+import { seedAuthors } from './adapter/data-access/seeder/seed-script/author.seeder';
+import { seedGenres } from './adapter/data-access/seeder/seed-script/genre.seeder';
+import { seedBorrowers } from './adapter/data-access/seeder/seed-script/borrower.seeder';
+import { seedBooks } from './adapter/data-access/seeder/seed-script/book.seeder';
+import { seedUsers } from './adapter/data-access/seeder/seed-script/user.seeder';
 
 
 const app: Express = express();
@@ -81,6 +86,12 @@ const initializeApp = async (): Promise<void> => {
     const borrowerController = new BorrowerController(borrowerService);
     const bookTransactionController = new BookTransactionController(bookTransactionService);
 
+    //seed database
+    seedAuthors(authorRepository);
+    seedGenres(genreRepository);
+    seedBorrowers(borrowerRepository);
+    seedBooks(bookRepository);
+    seedUsers(userRepository);
       
  
     
@@ -101,6 +112,8 @@ const initializeApp = async (): Promise<void> => {
 
     // Global error handler - should be the last middleware
     app.use(ErrorMiddleware);
+  
+   
 
     // Start server
     app.listen(port, () => console.log(`Server running on ${address}:${port}`));

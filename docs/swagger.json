@@ -404,7 +404,418 @@
           }
         }
       }
-    }  
+    },
+    "/books": {
+      "get": {
+        "summary": "Get all books",
+        "tags": ["Book"],
+        "responses": {
+          "200": {
+            "description": "List of all books",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new book",
+        "tags": ["Book"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Book created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/books/{bookReference}": {
+      "get": {
+        "summary": "Get a book by reference",
+        "tags": ["Book"],
+        "parameters": [
+          {
+            "name": "bookReference",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Details of the book",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a book",
+        "tags": ["Book"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bookReference",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IUpdateBookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Book updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a book",
+        "tags": ["Book"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bookReference",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book deleted successfully"
+          }
+        }
+      }
+    },
+    "/books/delete/{bookReference}": {
+      "put": {
+        "summary": "Soft delete a book",
+        "tags": ["Book"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bookReference",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book soft-deleted successfully"
+          }
+        }
+      }
+    },
+    "/borrowers": {
+      "get": {
+        "summary": "Get all borrowers",
+        "tags": ["Borrower"],
+        "responses": {
+          "200": {
+            "description": "List of all borrowers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Borrower"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new borrower",
+        "tags": ["Borrower"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ICreateBorrowerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Borrower created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Borrower"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/borrowers/{borrowerReference}": {
+      "get": {
+        "summary": "Get a borrower by reference",
+        "tags": ["Borrower"],
+        "parameters": [
+          {
+            "name": "borrowerReference",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Details of the borrower",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Borrower"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a borrower",
+        "tags": ["Borrower"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "borrowerReference",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IUpdateBorrowerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Borrower updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Borrower"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a borrower",
+        "tags": ["Borrower"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "borrowerReference",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Borrower deleted successfully"
+          }
+        }
+      },
+      "put /delete/{borrowerReference}": {
+        "summary": "Soft delete a borrower",
+        "tags": ["Borrower"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "borrowerReference",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Borrower soft-deleted successfully"
+          }
+        }
+      }
+    },
+    "/transaction/borrow": {
+      "post": {
+        "summary": "Borrow a book",
+        "tags": ["BookTransaction"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ICreateBookTransactionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Book borrowed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookTransaction"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transaction/return": {
+      "post": {
+        "summary": "Return a book",
+        "tags": ["BookTransaction"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "transactionReference": { "type": "string", "description": "Reference of the book transaction to return" },
+                  "returnDate": { "type": "string", "format": "date-time", "description": "Date when the book is returned" }
+                },
+                "required": ["transactionReference", "returnDate"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Book returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookTransaction"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   },
   "components": {
     "securitySchemes": {
@@ -658,7 +1069,203 @@
             "description": "Date when the user account was last updated"
           }
         }
-      }    
+      },
+      "Book": {
+        "type": "object",
+        "properties": {
+          "bookReference": { "type": "string" },
+          "title": { "type": "string" },
+          "isbn": { "type": "string" },
+          "authors": { "type": "array", "items": { "$ref": "#/components/schemas/Author" } },
+          "publicationDate": { "type": "string", "format": "date" },
+          "language": { "type": "string" },
+          "genres": { "type": "array", "items": { "$ref": "#/components/schemas/Genre" } },
+          "synopsis": { "type": "string" },
+          "pageCount": { "type": "integer" },
+          "publisher": { "type": "string" },
+          "availableCopies": { "type": "integer" },
+          "totalCopies": { "type": "integer" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "isDeleted": { "type": "boolean" }
+        },
+        "required": ["title", "isbn", "authors", "publicationDate", "language", "genres", "synopsis", "pageCount", "publisher", "totalCopies"]
+      },
+      "CreateBookDto": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "isbn": { "type": "string" },
+          "authorReferences": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "publicationDate": { "type": "string", "format": "date" },
+          "language": { "type": "string" },
+          "genreReferences": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "synopsis": { "type": "string" },
+          "pageCount": { "type": "integer" },
+          "publisher": { "type": "string" },
+          "availableCopies": { "type": "integer" },
+          "totalCopies": { "type": "integer" }
+        },
+        "required": ["title", "isbn", "authorReferences", "publicationDate", "language", "genreReferences", "synopsis", "pageCount", "publisher", "totalCopies"]
+   
+      },
+      "IUpdateBookDto": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "isbn": { "type": "string" },
+          "authorReferences": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "publicationDate": { "type": "string", "format": "date" },
+          "language": { "type": "string" },
+          "genreReferences": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "synopsis": { "type": "string" },
+          "pageCount": { "type": "integer" },
+          "publisher": { "type": "string" },
+          "availableCopies": { "type": "integer" },
+          "totalCopies": { "type": "integer" }
+        }
+      },
+      "ICreateBorrowerDto": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "dateOfBirth": { "type": "string", "format": "date" },
+          "contact": {
+            "type": "object",
+            "properties": {
+              "email": { "type": "string" },
+              "phone": { "type": "string", "nullable": true },
+              "address": {
+                "type": "object",
+                "properties": {
+                  "street": { "type": "string" },
+                  "city": { "type": "string" },
+                  "state": { "type": "string" },
+                  "zipCode": { "type": "string" },
+                  "country": { "type": "string" }
+                },
+                "nullable": true
+              }
+            }
+          },
+          "booksBorrowed": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BookBorrowed" }
+          }
+        },
+        "required": ["firstName", "lastName", "dateOfBirth", "contact"]
+      },
+      "IUpdateBorrowerDto": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string", "nullable": true },
+          "lastName": { "type": "string", "nullable": true },
+          "dateOfBirth": { "type": "string", "format": "date", "nullable": true },
+          "contact": {
+            "type": "object",
+            "properties": {
+              "email": { "type": "string", "nullable": true },
+              "phone": { "type": "string", "nullable": true },
+              "address": {
+                "type": "object",
+                "properties": {
+                  "street": { "type": "string", "nullable": true },
+                  "city": { "type": "string", "nullable": true },
+                  "state": { "type": "string", "nullable": true },
+                  "zipCode": { "type": "string", "nullable": true },
+                  "country": { "type": "string", "nullable": true }
+                },
+                "nullable": true
+              }
+            },
+            "nullable": true
+          },
+          "booksBorrowed": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BookBorrowed" },
+            "nullable": true
+          }
+        }
+      },
+      "Borrower": {
+        "type": "object",
+        "properties": {
+          "borrowerReference": { "type": "string" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "dateOfBirth": { "type": "string", "format": "date" },
+          "contact": {
+            "type": "object",
+            "properties": {
+              "email": { "type": "string" },
+              "phone": { "type": "string", "nullable": true },
+              "address": {
+                "type": "object",
+                "properties": {
+                  "street": { "type": "string" },
+                  "city": { "type": "string" },
+                  "state": { "type": "string" },
+                  "zipCode": { "type": "string" },
+                  "country": { "type": "string" }
+                },
+                "nullable": true
+              }
+            }
+          },
+          "booksBorrowed": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BookBorrowed" }
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "isDeleted": { "type": "boolean" }
+        },
+        "required": ["firstName", "lastName", "dateOfBirth", "contact"]
+      },
+      "BookBorrowed": {
+        "type": "object",
+        "properties": {
+          "bookReference": { "type": "string" },
+          "borrowDate": { "type": "string", "format": "date-time" },
+          "returnDate": { "type": "string", "format": "date-time", "nullable": true }
+        },
+        "required": ["bookReference", "borrowDate"]
+      },
+      "ICreateBookTransactionDto": {
+        "type": "object",
+        "properties": {
+          "borrowerReference": { "type": "string", "description": "Reference to the borrower renting the book" },
+          "bookReference": { "type": "string", "description": "Reference to the book being rented" },
+          "transactionDate": { "type": "string", "format": "date-time", "description": "The date when the book is being rented" }
+        },
+        "required": ["borrowerReference", "bookReference", "transactionDate"]
+      },
+      "BookTransaction": {
+        "type": "object",
+        "properties": {
+          "transactionReference": { "type": "string" },
+          "bookReference": { "type": "string" },
+          "borrowerReference": { "type": "string" },
+          "transactionDate": { "type": "string", "format": "date-time" },
+          "returnDate": { "type": "string", "format": "date-time", "nullable": true },
+          "status": { "type": "string", "enum": ["borrowed", "returned"] }
+        },
+        "required": ["transactionReference", "bookReference", "borrowerReference", "transactionDate", "status"]
+      }
+        
     }
   }
   
