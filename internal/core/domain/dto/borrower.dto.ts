@@ -1,4 +1,5 @@
-// DTO for creating a new borrower
+import { BookBorrowed } from "../model/book.borrowed.model";
+
 export interface CreateBorrowerDto {
   firstName: string;
   lastName: string;
@@ -14,9 +15,9 @@ export interface CreateBorrowerDto {
       country: string;
     };
   };
+  booksBorrowed: BookBorrowed[]; // Assuming this can be empty at creation.
 }
-  
-// DTO for updating an existing borrower
+
 export interface UpdateBorrowerDto {
   firstName?: string;
   lastName?: string;
@@ -32,11 +33,5 @@ export interface UpdateBorrowerDto {
       country?: string;
     };
   };
+  booksBorrowed?: BookBorrowed[]; // Assuming updates can modify this list.
 }
-  
-// DTO for borrowing a book
-export interface BorrowBookDto {
-  bookReference: string; // Reference to the book being borrowed
-  borrowDate: Date;
-}
-  

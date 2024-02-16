@@ -16,7 +16,7 @@ const config = {
   jwtKey: process.env.JWT_KEY || 'default_key',
   jwtAudience: process.env.JWT_AUDIENCE || 'lms',
   jwtIssuer: process.env.JWT_ISSUER || 'https://localhost:3003',
-  tokenExpiry: process.env.Token_EXPIRY || '5',
+  jwtExpiry: process.env.JWT_EXPIRY || '5',
 };
 
 export default config;

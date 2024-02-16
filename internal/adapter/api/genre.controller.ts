@@ -5,6 +5,7 @@ import { GenreServicePort } from "../../port/service-port/genre.service.port";
 import { Genre } from '../../core/domain/model/genre.model';
 import { logEvent } from '../middleware/log.middleware';
 import { CreateGenreDto } from '../../core/domain/dto/genre.dto';
+import { AppError } from '../helper/error.helper';
 
 export class GenreController {
     constructor(private readonly genreService: GenreServicePort) {}
@@ -20,10 +21,15 @@ export class GenreController {
           res.json({ genres, total });
          
       } catch (error) {
-          // Log internal server error
-          logEvent('ERROR', error);
-          // Send internal server error response
-          res.status(500).json({ error: 'Internal Server Error' });
+        if (error instanceof AppError) {
+            // Error is an instance of AppError; handle it based on its statusCode and message
+            logEvent('ERROR', error.message);
+            res.status(error.statusCode).json({ error });
+        } else {
+            // Handle generic or unexpected errors
+            logEvent('ERROR', 'An unknown error occurred');
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
       }
   }
     async getGenreByReference(req: Request, res: Response): Promise<void> {
@@ -36,7 +42,15 @@ export class GenreController {
                 res.status(404).send({ error: 'Genre not found' });
             }
         } catch (error) {
-            res.status(500).send({ error: 'Internal Server Error' });
+            if (error instanceof AppError) {
+                // Error is an instance of AppError; handle it based on its statusCode and message
+                logEvent('ERROR', error.message);
+                res.status(error.statusCode).json({ error });
+            } else {
+                // Handle generic or unexpected errors
+                logEvent('ERROR', 'An unknown error occurred');
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
         }
     }
 
@@ -46,7 +60,15 @@ export class GenreController {
             const createdGenre = await this.genreService.createGenre(newGenre);
             res.status(201).json(createdGenre);
         } catch (error) {
-            res.status(500).send({ error: 'Internal Server Error' });
+            if (error instanceof AppError) {
+                // Error is an instance of AppError; handle it based on its statusCode and message
+                logEvent('ERROR', error.message);
+                res.status(error.statusCode).json({ error });
+            } else {
+                // Handle generic or unexpected errors
+                logEvent('ERROR', 'An unknown error occurred');
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
         }
     }
 
@@ -61,7 +83,15 @@ export class GenreController {
                 res.status(404).send({ error: 'Genre not found' });
             }
         } catch (error) {
-            res.status(500).send({ error: 'Internal Server Error' });
+            if (error instanceof AppError) {
+                // Error is an instance of AppError; handle it based on its statusCode and message
+                logEvent('ERROR', error.message);
+                res.status(error.statusCode).json({ error });
+            } else {
+                // Handle generic or unexpected errors
+                logEvent('ERROR', 'An unknown error occurred');
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
         }
     }
 
@@ -75,7 +105,15 @@ export class GenreController {
                 res.status(404).send({ error: 'Genre not found' });
             }
         } catch (error) {
-            res.status(500).send({ error: 'Internal Server Error' });
+            if (error instanceof AppError) {
+                // Error is an instance of AppError; handle it based on its statusCode and message
+                logEvent('ERROR', error.message);
+                res.status(error.statusCode).json({ error });
+            } else {
+                // Handle generic or unexpected errors
+                logEvent('ERROR', 'An unknown error occurred');
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
         }
     }
 }

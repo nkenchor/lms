@@ -1,10 +1,26 @@
+import { randomUUID } from "crypto";
 
-export interface User {
-    userReference: string; // Unique identifier for the user
-    username: string; // User's username
-    password: string; // User's password (hashed and salted in a real-world application)
-    roles: string[]; // User roles (e.g., 'admin', 'librarian', 'user')
-    createdAt: Date; // Date when the user was created
-    updatedAt: Date; // Date when the user was last updated
+export class User {
+  userReference: string;
+  username: string; // Required
+  password: string; // Required
+  roles: string[];
+  createdAt: Date;
+  updatedAt: Date;
+
+  constructor({
+    username,
+    password,
+    userReference = randomUUID(),
+    roles = ['user'],
+    createdAt = new Date(),
+    updatedAt = new Date()
+  }: { username: string; password: string; } & Partial<Omit<User, 'username' | 'password'>>) {
+    this.userReference = userReference;
+    this.username = username;
+    this.password = password;
+    this.roles = roles;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+  }
 }
-  

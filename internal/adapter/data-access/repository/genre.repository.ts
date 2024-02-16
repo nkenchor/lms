@@ -1,7 +1,7 @@
 import { Db as Database, Collection } from 'mongodb';
 import { Genre } from "../../../core/domain/model/genre.model";
 import { GenreRepositoryPort } from "../../../port/repository-port/genre.repository.port";
-import { ErrorType } from "../../helper/error.helper"; // Import your error helper
+import { AppError, ErrorType } from "../../helper/error.helper"; // Import your error helper
 import { logEvent } from "../../middleware/log.middleware"; // Import your error helper
 
 export class GenreRepository implements GenreRepositoryPort {
@@ -16,7 +16,7 @@ export class GenreRepository implements GenreRepositoryPort {
   }
 
   async getAllGenres(page: number, pageSize: number): Promise<{ genres: Genre[]; total: number }> {
-  logEvent("ERROR", "getting all genres");
+  logEvent("INFO", "getting all genres");
   try {
     const skip = (page - 1) * pageSize;
     const [genres, total] = await Promise.all([
@@ -31,8 +31,10 @@ export class GenreRepository implements GenreRepositoryPort {
     console.error("Error fetching genres:", error);
 
     // Create a custom error message using your error helper
-    logEvent("ERROR", error)
-    throw { type: ErrorType.ServerError, message: 'Unable to fetch genre. '  + error};
+    logEvent("ERROR",'Unable to fetch genre. '  + error)
+    
+    throw new AppError(ErrorType.ServerError, 'Unable to fetch genre. '  + error);
+
 
   }
 }
@@ -40,40 +42,57 @@ export class GenreRepository implements GenreRepositoryPort {
   
  
   async createGenre(genre: Genre): Promise<Genre> {
-    await this.getCollection().insertOne(genre);
-    // Assuming create always succeeds or throws an error, no need for null check
+    const result =await this.getCollection().insertOne(genre);
+    if (!result.acknowledged) {
+      logEvent("ERROR", `failed to create genre with reference: ${genre.genreReference}`)
+      throw new AppError(ErrorType.CreateError, `failed to create genre with reference: ${genre.genreReference}`);
+
+  }
+
     return genre;
   }
   
 
   async getGenreByReference(genreReference: string): Promise<Genre> {
-    const genre = await this.getCollection().findOne({ genreReference });
+    const genre = await this.getCollection().findOne({genreReference: genreReference });
     if (!genre) {
-      throw new Error(`Genre not found for reference: ${genreReference}`);
+      logEvent("ERROR",`Genre not found for reference: ${genreReference}`)
+      throw new AppError(ErrorType.NoRecordError,`Genre not found for reference: ${genreReference}`);
+      
     }
     return genre;
   }
 
   async updateGenre(genreReference: string, updatedGenre: Genre): Promise<Genre> {
-    const collection = this.getCollection();
+    const collection: Collection<Genre> = this.getCollection();
+    
+    // Attempt to update the genre directly without a preliminary fetch
     const result = await collection.findOneAndUpdate(
-      { genreReference },
+      { genreReference: genreReference },
       { $set: updatedGenre },
       { returnDocument: 'after' }
     );
-
+    
+    // Check if the genre was found and updated
     if (!result) {
-      throw new Error(`Genre not found for reference: ${genreReference}, update failed.`);
+      logEvent("ERROR", `Genre not found for reference: ${genreReference}, update failed.`);
+      throw new AppError(ErrorType.UpdateError, `Genre not found for reference: ${genreReference}, update failed.`);
     }
+    
+    // Return the updated genre
     return result;
   }
 
   async deleteGenre(genreReference: string): Promise<boolean> {
-    const result= await this.getCollection().deleteOne({ genreReference });
+    const genre = await this.getGenreByReference(genreReference);
+   
+    const result= await this.getCollection().findOneAndDelete({ genreReference: genreReference });
     if (!result) {
-      throw new Error(`Genre not found for reference: ${genreReference}, delete failed.`);
+      logEvent("ERROR", `Error deleting genre for reference: ${genreReference}, delete failed.`)
+      throw new AppError(ErrorType.ServerError,`Error deleting genre nfor reference: ${genreReference}, delete failed.`);
+
     }
-    // Return explicitly to indicate success, no value needed
+    
     return true;
   }
 }

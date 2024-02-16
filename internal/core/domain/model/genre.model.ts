@@ -2,18 +2,18 @@ import { randomUUID } from "crypto";
 
 export class Genre {
   genreReference: string;
-  name: string;
-  description: string;
+  name: string; // Required
+  description: string; // Required
   createdAt: Date;
   updatedAt: Date;
 
   constructor({
+    name,
+    description,
     genreReference = randomUUID(),
-    name = '',
-    description = '',
     createdAt = new Date(),
     updatedAt = new Date()
-  }: Partial<Genre>) {
+  }: { name: string; description: string; } & Partial<Omit<Genre, 'name' | 'description'>>) {
     this.genreReference = genreReference;
     this.name = name;
     this.description = description;
@@ -21,5 +21,3 @@ export class Genre {
     this.updatedAt = updatedAt;
   }
 }
-
- 

@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -18,7 +19,8 @@ export enum ErrorType {
   BadRequestError = 'BAD_REQUEST_ERROR',
   ServerError = 'SERVER_ERROR',
   ConflictError = 'CONFLICT_ERROR',
-  UnAuthorized = 'UN_AUTHORIZED_ERROR',
+  UnAuthorized = 'UNAUTHORIZED_ERROR',
+  AuthenticationError = 'AUTHENTICATION_ERROR',
   ForbiddenError = 'FORBIDDEN_ERROR',
   RateLimitExceeded = 'RATE_LIMIT_EXCEEDED',
   PayloadTooLarge = 'PAYLOAD_TOO_LARGE',
@@ -39,7 +41,7 @@ export enum ErrorType {
 const CustomError: Record<ErrorType, number> = {
   [ErrorType.ValidationError]: 400,
   [ErrorType.RedisSetupError]: 500,
-  [ErrorType.NoRecordError]: 204,
+  [ErrorType.NoRecordError]: 404,
   [ErrorType.InvalidResource]: 422,
   [ErrorType.CreateError]: 500,
   [ErrorType.UpdateError]: 500,
@@ -66,6 +68,8 @@ const CustomError: Record<ErrorType, number> = {
   [ErrorType.InternalError]: 500,
   [ErrorType.PaymentError]: 402,
   [ErrorType.Prohibited]: 451,
+  [ErrorType.AuthenticationError]: 401,
+
 }
 
 export interface ErrorResponse {
@@ -89,4 +93,38 @@ export function ErrorMessage(errorType: ErrorType, message: string): ErrorRespon
 }
 
 
+export class AppError extends Error {
+  statusCode: number;
+  errorType: ErrorType;
+  errorReference: string;
+  timeStamp: string;
+  errors: string[];
 
+  constructor(errorType: ErrorType, message: string) {
+    super(message);
+    this.statusCode = CustomError[errorType];
+    this.errorType = errorType;
+    this.errorReference = randomUUID();
+    this.timeStamp = new Date().toISOString();
+    this.errors = [message];
+
+    // Ensure the stack trace is captured
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, AppError);
+    }
+
+    // Set the prototype explicitly.
+    Object.setPrototypeOf(this, AppError.prototype);
+  }
+
+  toJSON() {
+    return {
+      statusCode: this.statusCode,
+      errorType: this.errorType,
+      errorReference: this.errorReference,
+      timeStamp: this.timeStamp,
+      message: this.message, // `message` is from the base Error class
+      errors: this.errors,
+    };
+  }
+}
