@@ -1,6 +1,6 @@
 import { BookBorrowed } from "../model/book.borrowed.model";
 
-export interface CreateBorrowerDto {
+export interface ICreateBorrowerDto {
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
@@ -18,7 +18,7 @@ export interface CreateBorrowerDto {
   booksBorrowed: BookBorrowed[]; // Assuming this can be empty at creation.
 }
 
-export interface UpdateBorrowerDto {
+export interface IUpdateBorrowerDto {
   firstName?: string;
   lastName?: string;
   dateOfBirth?: Date;

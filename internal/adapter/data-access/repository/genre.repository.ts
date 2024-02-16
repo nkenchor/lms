@@ -1,10 +1,10 @@
 import { Db as Database, Collection } from 'mongodb';
 import { Genre } from "../../../core/domain/model/genre.model";
-import { GenreRepositoryPort } from "../../../port/repository-port/genre.repository.port";
+import { IGenreRepositoryPort } from "../../../port/repository-port/genre.repository.port";
 import { AppError, ErrorType } from "../../helper/error.helper"; // Import your error helper
 import { logEvent } from "../../middleware/log.middleware"; // Import your error helper
 
-export class GenreRepository implements GenreRepositoryPort {
+export class GenreRepository implements IGenreRepositoryPort {
   private database: Database;
   private collectionName = 'genres';
 
@@ -62,6 +62,19 @@ export class GenreRepository implements GenreRepositoryPort {
     }
     return genre;
   }
+  async getGenreByName(name: string): Promise<Genre> {
+    // Using a regex to search for genres that contain the 'name' string, case-insensitive
+    const genre = await this.getCollection().findOne({ name: { $regex: name, $options: 'i' } });
+  
+    if (!genre) {
+      const errorMessage = `Genre not found for name: ${name}`;
+      logEvent("ERROR", errorMessage);
+      throw new AppError(ErrorType.NoRecordError, errorMessage);
+    }
+  
+    return genre;
+  }
+  
 
   async updateGenre(genreReference: string, updatedGenre: Genre): Promise<Genre> {
     const collection: Collection<Genre> = this.getCollection();
@@ -84,7 +97,7 @@ export class GenreRepository implements GenreRepositoryPort {
   }
 
   async deleteGenre(genreReference: string): Promise<boolean> {
-    const genre = await this.getGenreByReference(genreReference);
+    
    
     const result= await this.getCollection().findOneAndDelete({ genreReference: genreReference });
     if (!result) {

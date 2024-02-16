@@ -1,12 +1,12 @@
 
 
-export interface CreateGenreDto {
+export interface ICreateGenreDto {
   name: string;
   description: string;
 }
   
  
-export interface UpdateGenreDto {
+export interface IUpdateGenreDto {
   name?: string;
   description?: string;
 }

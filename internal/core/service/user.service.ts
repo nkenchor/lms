@@ -1,25 +1,25 @@
 
-import { CreateUserDto, LoginUserDto } from "../../core/domain/dto/user.dto"; // Adjust the import path
+import { ICreateUserDto, ILoginUserDto } from "../../core/domain/dto/user.dto"; // Adjust the import path
 import { User } from "../../core/domain/model/user.model"; // Adjust the import path
-import { UserRepositoryPort } from "../../port/repository-port/user.repository.port";
+import { IUserRepositoryPort } from "../../port/repository-port/user.repository.port";
 import { generateToken } from "../../adapter/helper/auth.helper";
 import { logEvent } from "../../adapter/middleware/log.middleware";
 import { AppError, ErrorType } from "../../adapter/helper/error.helper";
 
 export class UserService {
-    private userRepository: UserRepositoryPort;
+    private userRepository: IUserRepositoryPort;
     private readonly jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret'; // Ensure to set this in your env
 
-    constructor(userRepository: UserRepositoryPort) {
+    constructor(userRepository: IUserRepositoryPort) {
         this.userRepository = userRepository;
     }
 
-    async createUser(userDto: CreateUserDto): Promise<User> {
+    async createUser(userDto: ICreateUserDto): Promise<User> {
       
         return this.userRepository.createUser(new User({ ...userDto }));
     }
 
-    async loginUser(userDto: LoginUserDto): Promise<string> {
+    async loginUser(userDto: ILoginUserDto): Promise<string> {
 
         const result = await this.userRepository.loginUser(userDto);
         if (result) {

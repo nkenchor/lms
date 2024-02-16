@@ -1,16 +1,16 @@
 import { Request, Response } from 'express';
 
-import { UserServicePort } from "../../port/service-port/user.service.port";
-import { CreateUserDto } from '../../core/domain/dto/user.dto';
+import { IUserServicePort } from "../../port/service-port/user.service.port";
+import { ICreateUserDto } from '../../core/domain/dto/user.dto';
 import { logEvent } from '../middleware/log.middleware';
 import { AppError, ErrorType } from '../helper/error.helper';
 
 export class UserController {
-    constructor(private readonly userService: UserServicePort) {}
+    constructor(private readonly userService: IUserServicePort) {}
 
     async createUser(req: Request, res: Response): Promise<void> {
         try {
-            const userDto = req.body as CreateUserDto;
+            const userDto = req.body as ICreateUserDto;
             const createdUser = await this.userService.createUser(userDto);
             // Exclude the password before sending the response
             const { password, ...userWithoutPassword } = createdUser;

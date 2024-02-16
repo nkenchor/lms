@@ -1,11 +1,11 @@
 // user.repository.port.ts
 
-import { LoginUserDto } from "../../core/domain/dto/user.dto";
+import { ILoginUserDto } from "../../core/domain/dto/user.dto";
 import { User } from "../../core/domain/model/user.model";
 
 
 
-export interface UserRepositoryPort {
+export interface IUserRepositoryPort {
     createUser(user: User): Promise<User>;
-    loginUser(user: LoginUserDto): Promise<boolean>;
+    loginUser(user: ILoginUserDto): Promise<boolean>;
 }

@@ -1,16 +1,16 @@
 // DTO for creating a new user
-export interface CreateUserDto {
+export interface ICreateUserDto {
   username: string;
   password: string;
 }
   
   // DTO for updating an existing user
-export interface UpdateUserDto {
+export interface IUpdateUserDto {
   username?: string;
   password?: string;
   roles?: string[];
 }
-export interface LoginUserDto {
+export interface ILoginUserDto {
   username: string;
   password: string;
 }

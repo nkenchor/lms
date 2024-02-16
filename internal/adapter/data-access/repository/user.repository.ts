@@ -1,13 +1,13 @@
 import { Db as Database, Collection } from 'mongodb';
 import { User } from "../../../core/domain/model/user.model"; // Adjust the import path as necessary
-import { UserRepositoryPort } from "../../../port/repository-port/user.repository.port"; // Adjust the import path
+import { IUserRepositoryPort } from "../../../port/repository-port/user.repository.port"; // Adjust the import path
 
 import bcrypt from "bcrypt"
-import { CreateUserDto, LoginUserDto } from '../../../core/domain/dto/user.dto';
+import { ICreateUserDto, ILoginUserDto } from '../../../core/domain/dto/user.dto';
 import { AppError, ErrorType } from '../../helper/error.helper';
 import { logEvent } from '../../middleware/log.middleware';
 
-export class UserRepository implements UserRepositoryPort {
+export class UserRepository implements IUserRepositoryPort {
   private database: Database;
   private collectionName = 'users';
 
@@ -20,7 +20,7 @@ export class UserRepository implements UserRepositoryPort {
   }
 
  
-async createUser(userDto: CreateUserDto): Promise<User> {
+async createUser(userDto: ICreateUserDto): Promise<User> {
     // Check if the user already exists
     const existingUser = await this.getCollection().findOne({ username: userDto.username });
     if (existingUser) {
@@ -61,7 +61,7 @@ async createUser(userDto: CreateUserDto): Promise<User> {
     return userToReturn;
 }
 
-async loginUser(userDto: LoginUserDto): Promise<boolean> {
+async loginUser(userDto: ILoginUserDto): Promise<boolean> {
     const user = await this.getCollection().findOne({ username : userDto.username});
     if (!user) {
       logEvent("ERROR", `user not found with username: : ${userDto.username}`)

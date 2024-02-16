@@ -1,14 +1,14 @@
-// src/internal/adapter/api/genre.controller.ts
+
 
 import { Request, Response } from 'express';
-import { GenreServicePort } from "../../port/service-port/genre.service.port";
+import { IGenreServicePort } from "../../port/service-port/genre.service.port";
 import { Genre } from '../../core/domain/model/genre.model';
 import { logEvent } from '../middleware/log.middleware';
-import { CreateGenreDto } from '../../core/domain/dto/genre.dto';
+import { ICreateGenreDto } from '../../core/domain/dto/genre.dto';
 import { AppError } from '../helper/error.helper';
 
 export class GenreController {
-    constructor(private readonly genreService: GenreServicePort) {}
+    constructor(private readonly genreService: IGenreServicePort) {}
 
     async getAllGenres(req: Request, res: Response): Promise<void> {
       try {
@@ -56,7 +56,7 @@ export class GenreController {
 
     async createGenre(req: Request, res: Response): Promise<void> {
         try {
-            const newGenre = req.body as CreateGenreDto; // Assuming body parsing middleware is used
+            const newGenre = req.body as ICreateGenreDto; // Assuming body parsing middleware is used
             const createdGenre = await this.genreService.createGenre(newGenre);
             res.status(201).json(createdGenre);
         } catch (error) {

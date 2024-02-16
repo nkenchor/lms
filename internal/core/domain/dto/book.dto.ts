@@ -1,7 +1,7 @@
 import { Author } from "../model/author.model";
 import { Genre } from "../model/genre.model";
 
-export interface CreateBookDto {
+export interface ICreateBookDto {
   title: string;
   isbn: string;
   authors: Author[];
@@ -15,7 +15,7 @@ export interface CreateBookDto {
   totalCopies: number;
 }
 
-export interface UpdateBookDto {
+export interface IUpdateBookDto {
   title?: string;
   isbn?: string;
   authors?: Author[];

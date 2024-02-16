@@ -1,10 +1,10 @@
-interface CreateAuthorDto {
+export interface CreateAuthorDto {
   firstName: string;
   lastName: string;
   biography: string;
 }
 
-interface UpdateAuthorDto {
+export interface IUpdateAuthorDto {
   authorReference?: string;
   firstName?: string;
   lastName?: string;
