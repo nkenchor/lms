@@ -3,6 +3,8 @@ import { IBookRepositoryPort } from "../../port/repository-port/book.repository.
 import { IBookServicePort } from "../../port/service-port/book.service.port";
 import { ICreateBookDto } from "../domain/dto/book.dto";
 import { Book } from "../domain/model/book.model";
+import { AppError, ErrorType } from "../../adapter/helper/error.helper";
+import { logEvent } from "../../adapter/middleware/log.middleware";
 
 
 export class BookService implements IBookServicePort {
@@ -30,5 +32,38 @@ export class BookService implements IBookServicePort {
 
   async deleteBook(bookReference: string): Promise<boolean> {
     return this.bookRepository.deleteBook(bookReference);
+  }
+  async increaseAvailableCopies(bookReference: string): Promise<boolean> {
+    try {
+      const book = await this.bookRepository.getBookByReference(bookReference);
+     
+      book.availableCopies += 1;
+      await this.bookRepository.updateBook(bookReference,book);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
+
+  async decreaseAvailableCopies(bookReference: string): Promise<boolean> {
+    try {
+      const book = await this.bookRepository.getBookByReference(bookReference);
+      if (!book) throw new Error("Book not found");
+      if (book.availableCopies <= 0) 
+      {
+        logEvent("ERROR", "No available copies to borrow");
+        throw new AppError(ErrorType.ServerError,"No available copies to borrow");
+
+      };
+     
+
+      book.availableCopies -= 1;
+      await this.bookRepository.updateBook(bookReference, book);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 }

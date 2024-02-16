@@ -1,3 +1,4 @@
+import { BookBorrowed } from './../../core/domain/model/book.borrowed.model';
 import { ICreateBorrowerDto, IUpdateBorrowerDto } from "../../core/domain/dto/borrower.dto";
 import { Borrower } from "../../core/domain/model/borrower.model";
 
@@ -9,4 +10,6 @@ export interface IBorrowerServicePort {
   updateBorrower(borrowerReference: string, updatedBorrower: IUpdateBorrowerDto): Promise<Borrower>;
   deleteBorrower(borrowerReference: string): Promise<boolean>;
   getBorrowerByName(name: string): Promise<Borrower>
+  addBookToBorrower(borrowerReference: string,bookBorrowed: BookBorrowed): Promise<boolean>
+  collectBookFromBorrower(borrowerReference: string,bookReference: string, returnDate: Date): Promise<boolean>
 }

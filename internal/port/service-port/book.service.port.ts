@@ -10,4 +10,6 @@ export interface IBookServicePort {
   updateBook(bookReference: string, updatedBook: IUpdateBookDto): Promise<Book>;
   deleteBook(bookReference: string): Promise<boolean>;
   getBookByName(name: string): Promise<Book>
+  increaseAvailableCopies(bookReference:string): Promise<boolean>;
+  decreaseAvailableCopies(bookReference:string): Promise<boolean>;
 }
