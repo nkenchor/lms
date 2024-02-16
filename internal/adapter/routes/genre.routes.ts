@@ -12,6 +12,7 @@ export const genreRoutes = (app: Express, genreController: GenreController): voi
     app.get('/genres/:genreReference', (req, res) => genreController.getGenreByReference(req, res));
     app.post('/genres',jwtAuthMiddleware, genreValidationRules, validationHelper, (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => genreController.createGenre(req, res));
     app.put('/genres/:genreReference',jwtAuthMiddleware, genreValidationRules, validationHelper,  (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => genreController.updateGenre(req, res));
-    app.delete('/genres/:genreReference',jwtAuthMiddleware,genreValidationRules, validationHelper,   (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => genreController.deleteGenre(req, res));
+    app.delete('/genres/:genreReference',jwtAuthMiddleware, (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => genreController.deleteGenre(req, res));
+    app.put('/genres/delete/:genreReference',jwtAuthMiddleware,   (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => genreController.softDeleteGenre(req, res));
 };
   

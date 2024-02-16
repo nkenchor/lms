@@ -1,4 +1,4 @@
-export interface CreateAuthorDto {
+export interface ICreateAuthorDto {
   firstName: string;
   lastName: string;
   biography: string;

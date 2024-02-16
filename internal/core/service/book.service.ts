@@ -1,44 +1,100 @@
-import { randomUUID } from "crypto";
+
 import { IBookRepositoryPort } from "../../port/repository-port/book.repository.port";
 import { IBookServicePort } from "../../port/service-port/book.service.port";
-import { ICreateBookDto } from "../domain/dto/book.dto";
+import { ICreateBookDto, IUpdateBookDto } from "../domain/dto/book.dto";
 import { Book } from "../domain/model/book.model";
-import { AppError, ErrorType } from "../../adapter/helper/error.helper";
-import { logEvent } from "../../adapter/middleware/log.middleware";
+import { RecordFilter } from "../domain/const/record.filter";
+import { IGenreRepositoryPort } from "../../port/repository-port/genre.repository.port";
+import { IAuthorRepositoryPort } from "../../port/repository-port/author.repository.port";
 
 
 export class BookService implements IBookServicePort {
-  constructor(private readonly bookRepository: IBookRepositoryPort) {}
+  constructor(private readonly bookRepository: IBookRepositoryPort,
+    private readonly genreRepository:IGenreRepositoryPort,
+    private readonly authorRepository:IAuthorRepositoryPort) {}
 
-  async getAllBooks(page: number, pageSize: number): Promise<{ books: Book[]; total: number }> {
-    return this.bookRepository.getAllBooks(page, pageSize);
+  async getAllBooks(page: number, pageSize: number,filter: RecordFilter): Promise<{ books: Book[]; total: number }> {
+    return this.bookRepository.getAllBooks(page, pageSize,filter);
   }
-
+  async getBooksByAuthorReference(authorReference: string, page: number, pageSize: number ): Promise<{ books: Book[]; total: number }>{
+     return this.bookRepository.getBooksByAuthorReference(authorReference, page, pageSize);
+  }
+  async getBooksByGenreReference(genreReference: string, page: number, pageSize: number): Promise<{ books: Book[]; total: number }>{
+    return this.bookRepository.getBooksByGenreReference(genreReference, page, pageSize);
+  }
   async getBookByReference(bookReference: string): Promise<Book> {
     return this.bookRepository.getBookByReference(bookReference);
   }
 
   async getBookByName(name: string): Promise<Book> {
-    return this.bookRepository.getBookByReference(name);
+    return this.bookRepository.getBookByName(name);
   }
 
   async createBook(dto: ICreateBookDto): Promise<Book> {
-    return this.bookRepository.createBook(new Book({ ...dto }));
+    // Fetch genres by their references
+    const genres = await Promise.all(dto.genreReferences.map(genreRef => this.genreRepository.getGenreByReference(genreRef)));
+  
+    // Fetch authors by their references
+    const authors = await Promise.all(dto.authorReferences.map(authorRef => this.authorRepository.getAuthorByReference(authorRef)));
+  
+    // Now, with both genres and authors fetched, create the Book instance
+    const book = new Book({
+      ...dto, // Spread the other properties from dto
+      genres, // Provide the fetched genres
+      authors, // Provide the fetched authors
+    });
+  
+    return this.bookRepository.createBook(book);
   }
+  
+  
 
-  async updateBook(bookReference: string, updatedBook: Book): Promise<Book> {
-    return this.bookRepository.updateBook(bookReference, updatedBook);
-  }
+  async updateBook(bookReference: string, dto: IUpdateBookDto): Promise<Book> {
+ 
+
+    // Fetch the existing book to ensure it exists
+    const existingBook = await this.bookRepository.getBookByReference(bookReference);
+    if (!existingBook) {
+        throw new Error('Book not found');
+    }
+
+    // Fetch genres by their references if provided
+    let genres;
+    if (dto.genreReferences) {
+        genres = await Promise.all(dto.genreReferences.map(genreRef => this.genreRepository.getGenreByReference(genreRef)));
+    }
+
+    // Fetch authors by their references if provided
+    let authors;
+    if (dto.authorReferences) {
+        authors = await Promise.all(dto.authorReferences.map(authorRef => this.authorRepository.getAuthorByReference(authorRef)));
+    }
+
+    const bookToUpdate = new Book(existingBook); // Create a Book instance from the existing data
+
+    if (genres) bookToUpdate.genres = genres;
+    if (authors) bookToUpdate.authors = authors;
+
+    
+   
+    await this.bookRepository.updateBook(bookReference, bookToUpdate);
+    
+
+    return bookToUpdate;
+}
 
   async deleteBook(bookReference: string): Promise<boolean> {
     return this.bookRepository.deleteBook(bookReference);
+  }
+  async softDeleteBook(bookReference: string): Promise<boolean> {
+    return this.bookRepository.softDeleteBook(bookReference);
   }
   async increaseAvailableCopies(bookReference: string): Promise<boolean> {
     try {
       const book = await this.bookRepository.getBookByReference(bookReference);
      
-      book.availableCopies += 1;
-      await this.bookRepository.updateBook(bookReference,book);
+      book.increaseAvailableCopies();
+      await this.updateBook(bookReference,book);
       return true;
     } catch (error) {
       console.error(error);
@@ -49,17 +105,9 @@ export class BookService implements IBookServicePort {
   async decreaseAvailableCopies(bookReference: string): Promise<boolean> {
     try {
       const book = await this.bookRepository.getBookByReference(bookReference);
-      if (!book) throw new Error("Book not found");
-      if (book.availableCopies <= 0) 
-      {
-        logEvent("ERROR", "No available copies to borrow");
-        throw new AppError(ErrorType.ServerError,"No available copies to borrow");
-
-      };
-     
-
-      book.availableCopies -= 1;
-      await this.bookRepository.updateBook(bookReference, book);
+    
+      book.decreaseAvailableCopies();
+      await this.updateBook(bookReference, book);
       return true;
     } catch (error) {
       console.error(error);

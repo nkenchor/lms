@@ -1,6 +1,6 @@
 
-import { ICreateUserDto, ILoginUserDto } from "../../core/domain/dto/user.dto"; // Adjust the import path
-import { User } from "../../core/domain/model/user.model"; // Adjust the import path
+import { ICreateUserDto, ILoginUserDto } from "../../core/domain/dto/user.dto"; 
+import { User } from "../../core/domain/model/user.model"; 
 import { IUserRepositoryPort } from "../../port/repository-port/user.repository.port";
 import { generateToken } from "../../adapter/helper/auth.helper";
 import { logEvent } from "../../adapter/middleware/log.middleware";
@@ -8,8 +8,7 @@ import { AppError, ErrorType } from "../../adapter/helper/error.helper";
 
 export class UserService {
     private userRepository: IUserRepositoryPort;
-    private readonly jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret'; // Ensure to set this in your env
-
+   
     constructor(userRepository: IUserRepositoryPort) {
         this.userRepository = userRepository;
     }

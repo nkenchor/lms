@@ -6,6 +6,7 @@ import { Book } from '../../core/domain/model/book.model';
 import { logEvent } from '../middleware/log.middleware';
 import { ICreateBookDto } from '../../core/domain/dto/book.dto';
 import { AppError } from '../helper/error.helper';
+import { RecordFilter } from '../../core/domain/const/record.filter';
 
 export class BookController {
     constructor(private readonly bookService: IBookServicePort) {}
@@ -14,7 +15,8 @@ export class BookController {
       try {
           const page = parseInt(req.query.page as string) || 1;
           const pageSize = parseInt(req.query.pageSize as string) || 10;
-          const result = await this.bookService.getAllBooks(page, pageSize);
+          const recordFilter = req.query.recordFilter as RecordFilter;
+          const result = await this.bookService.getAllBooks(page, pageSize,recordFilter);
   
   
           const { books, total } = result as { books: Book[]; total: number; };
@@ -99,6 +101,27 @@ export class BookController {
         try {
             const bookReference = req.params.bookReference;
             const success = await this.bookService.deleteBook(bookReference);
+            if (success) {
+                res.status(204).send();
+            } else {
+                res.status(404).send({ error: 'Book not found' });
+            }
+        } catch (error) {
+            if (error instanceof AppError) {
+                // Error is an instance of AppError; handle it based on its statusCode and message
+                logEvent('ERROR', error.message);
+                res.status(error.statusCode).json({ error });
+            } else {
+                // Handle generic or unexpected errors
+                logEvent('ERROR', 'An unknown error occurred');
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
+        }
+    }
+    async softDeleteBook(req: Request, res: Response): Promise<void> {
+        try {
+            const bookReference = req.params.bookReference;
+            const success = await this.bookService.softDeleteBook(bookReference);
             if (success) {
                 res.status(204).send();
             } else {

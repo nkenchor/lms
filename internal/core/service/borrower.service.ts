@@ -1,16 +1,17 @@
-import { randomUUID } from "crypto";
+
 import { IBorrowerRepositoryPort } from "../../port/repository-port/borrower.repository.port";
 import { IBorrowerServicePort } from "../../port/service-port/borrower.service.port";
 import { ICreateBorrowerDto } from "../domain/dto/borrower.dto";
 import { Borrower } from "../domain/model/borrower.model";
 import { BookBorrowed } from "../domain/model/book.borrowed.model";
+import { RecordFilter } from "../domain/const/record.filter";
 
 
 export class BorrowerService implements IBorrowerServicePort {
   constructor(private readonly borrowerRepository: IBorrowerRepositoryPort) {}
 
-  async getAllBorrowers(page: number, pageSize: number): Promise<{ borrowers: Borrower[]; total: number }> {
-    return this.borrowerRepository.getAllBorrowers(page, pageSize);
+  async getAllBorrowers(page: number, pageSize: number,filter: RecordFilter): Promise<{ borrowers: Borrower[]; total: number }> {
+    return this.borrowerRepository.getAllBorrowers(page, pageSize,filter);
   }
 
   async getBorrowerByReference(borrowerReference: string): Promise<Borrower> {
@@ -18,7 +19,7 @@ export class BorrowerService implements IBorrowerServicePort {
   }
 
   async getBorrowerByName(name: string): Promise<Borrower> {
-    return this.borrowerRepository.getBorrowerByReference(name);
+    return this.borrowerRepository.getBorrowerByName(name);
   }
 
   async createBorrower(dto: ICreateBorrowerDto): Promise<Borrower> {
@@ -32,16 +33,15 @@ export class BorrowerService implements IBorrowerServicePort {
   async deleteBorrower(borrowerReference: string): Promise<boolean> {
     return this.borrowerRepository.deleteBorrower(borrowerReference);
   }
-  async addBookToBorrower(borrowerReference: string,bookBorrowed: BookBorrowed): Promise<boolean> {
+  async softDeleteBorrower(borrowerReference: string): Promise<boolean> {
+    return this.borrowerRepository.softDeleteBorrower(borrowerReference);
+  }
+  async borrowBook(borrowerReference: string,bookBorrowed: BookBorrowed): Promise<boolean> {
     try {
       const borrower = await this.borrowerRepository.getBorrowerByReference(borrowerReference);
-      if (!borrower) throw new Error("Borrower not found");
-
-      
-
-      // Assuming booksBorrowed is an array of BookBorrowed objects
-      borrower.booksBorrowed.push(bookBorrowed);
-      await this.borrowerRepository.updateBorrower(borrowerReference, borrower);
+     
+      borrower.borrowBook(bookBorrowed)
+      await this.updateBorrower(borrowerReference, borrower);
       return true;
     } catch (error) {
       console.error(error);
@@ -49,20 +49,13 @@ export class BorrowerService implements IBorrowerServicePort {
     }
   }
 
-  async collectBookFromBorrower(borrowerReference: string, bookReference: string, returnDate: Date): Promise<boolean> {
+  async returnBook(borrowerReference: string, bookReference: string, returnDate: Date): Promise<boolean> {
     try {
       const borrower = await this.borrowerRepository.getBorrowerByReference(borrowerReference);
-      if (!borrower) throw new Error("Borrower not found");
 
-      // Find the book to return and update its returnDate
-      const bookToReturnIndex = borrower.booksBorrowed.findIndex(bb => bb.bookReference === bookReference && !bb.returnDate);
-      if (bookToReturnIndex !== -1) {
-        borrower.booksBorrowed[bookToReturnIndex].returnDate = returnDate;
-      } else {
-        throw new Error("Book not found in borrower's list");
-      }
+      borrower.returnBook(bookReference,new Date())
 
-      await this.borrowerRepository.updateBorrower(borrowerReference, borrower);
+      await this.updateBorrower(borrowerReference, borrower);
       return true;
     } catch (error) {
       console.error(error);

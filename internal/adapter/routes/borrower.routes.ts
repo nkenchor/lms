@@ -12,6 +12,7 @@ export const borrowerRoutes = (app: Express, borrowerController: BorrowerControl
     app.get('/borrowers/:borrowerReference', (req, res) => borrowerController.getBorrowerByReference(req, res));
     app.post('/borrowers',jwtAuthMiddleware, borrowerValidationRules, validationHelper, (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => borrowerController.createBorrower(req, res));
     app.put('/borrowers/:borrowerReference',jwtAuthMiddleware, borrowerValidationRules, validationHelper,  (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => borrowerController.updateBorrower(req, res));
-    app.delete('/borrowers/:borrowerReference',jwtAuthMiddleware,borrowerValidationRules, validationHelper,   (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => borrowerController.deleteBorrower(req, res));
+    app.delete('/borrowers/:borrowerReference',jwtAuthMiddleware, (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => borrowerController.deleteBorrower(req, res));
+    app.put('/borrowers/delete/:borrowerReference',jwtAuthMiddleware, (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => borrowerController.softDeleteBorrower(req, res));
 };
   

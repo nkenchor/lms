@@ -12,6 +12,7 @@ export const authorRoutes = (app: Express, authorController: AuthorController): 
     app.get('/authors/:authorReference', (req, res) => authorController.getAuthorByReference(req, res));
     app.post('/authors',jwtAuthMiddleware, authorValidationRules, validationHelper, (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => authorController.createAuthor(req, res));
     app.put('/authors/:authorReference',jwtAuthMiddleware, authorValidationRules, validationHelper,  (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => authorController.updateAuthor(req, res));
-    app.delete('/authors/:authorReference',jwtAuthMiddleware,authorValidationRules, validationHelper,   (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => authorController.deleteAuthor(req, res));
+    app.delete('/authors/:authorReference',jwtAuthMiddleware,  (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => authorController.deleteAuthor(req, res));
+    app.put('/authors/delete/:authorReference',jwtAuthMiddleware,  (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => authorController.softDeleteAuthor(req, res));
 };
   

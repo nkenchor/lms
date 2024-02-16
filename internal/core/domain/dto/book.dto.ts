@@ -4,10 +4,10 @@ import { Genre } from "../model/genre.model";
 export interface ICreateBookDto {
   title: string;
   isbn: string;
-  authors: Author[];
+  authorReferences: string[];
   publicationDate: Date;
   language: string;
-  genre: Genre[];
+  genreReferences: string[];
   synopsis: string;
   pageCount: number;
   publisher: string;
@@ -18,13 +18,14 @@ export interface ICreateBookDto {
 export interface IUpdateBookDto {
   title?: string;
   isbn?: string;
-  authors?: Author[];
+  authorReferences?: string[];
   publicationDate?: Date;
   language?: string;
-  genre?: Genre[];
+  genreReferences?: string[];
   synopsis?: string;
   pageCount?: number;
   publisher?: string;
   availableCopies?: number;
   totalCopies?: number;
 }
+

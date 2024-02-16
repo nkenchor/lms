@@ -13,7 +13,7 @@ export const bookRoutes = (app: Express, bookController: BookController): void =
     app.get('/books/:bookReference', (req, res) => bookController.getBookByReference(req, res));
     app.post('/books',jwtAuthMiddleware, bookValidationRules, validationHelper, (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => bookController.createBook(req, res));
     app.put('/books/:bookReference',jwtAuthMiddleware, bookValidationRules, validationHelper,  (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => bookController.updateBook(req, res));
-    app.delete('/books/:bookReference',jwtAuthMiddleware,bookValidationRules, validationHelper,   (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => bookController.deleteBook(req, res));
-
+    app.delete('/books/:bookReference',jwtAuthMiddleware,   (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => bookController.deleteBook(req, res));
+    app.put('/books/delete/:bookReference',jwtAuthMiddleware,   (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>) => bookController.softDeleteBook(req, res));
 };
   

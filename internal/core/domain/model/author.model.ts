@@ -26,6 +26,7 @@ export class Author {
   awards: string[];
   createdAt: Date; 
   updatedAt: Date;
+  isDeleted: boolean; // Indicates whether the author is soft-deleted
 
   constructor({
     firstName,
@@ -38,8 +39,9 @@ export class Author {
     socialMedia = {},
     awards = [],
     createdAt = new Date(),
-    updatedAt = new Date()
-  }: { firstName: string; lastName: string; biography: string; } & Partial<Omit<Author, 'firstName' | 'lastName' | 'biography'>>) {
+    updatedAt = new Date(),
+    isDeleted = false, // Default to false, indicating the author is not deleted
+  }: { firstName: string; lastName: string; biography: string; } & Partial<Omit<Author, 'firstName' | 'lastName' | 'biography'>> & { isDeleted?: boolean }) {
     this.authorReference = authorReference;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -51,5 +53,18 @@ export class Author {
     this.awards = awards;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.isDeleted = isDeleted;
+  }
+
+  // Method to soft delete the author
+  softDelete() {
+    this.isDeleted = true;
+    this.updatedAt = new Date(); // Update the updatedAt timestamp to reflect the deletion time
+  }
+
+  // Method to restore the author
+  restore() {
+    this.isDeleted = false;
+    this.updatedAt = new Date(); // Update the updatedAt timestamp to reflect the restoration time
   }
 }
