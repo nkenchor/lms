@@ -36,6 +36,7 @@ import { seedGenres } from './adapter/data-access/seeder/seed-script/genre.seede
 import { seedBorrowers } from './adapter/data-access/seeder/seed-script/borrower.seeder';
 import { seedBooks } from './adapter/data-access/seeder/seed-script/book.seeder';
 import { seedUsers } from './adapter/data-access/seeder/seed-script/user.seeder';
+import { openUrl } from './adapter/utils/browser.utils';
 
 
 const app: Express = express();
@@ -114,9 +115,15 @@ const initializeApp = async (): Promise<void> => {
     app.use(ErrorMiddleware);
   
    
-
+   
     // Start server
     app.listen(port, () => console.log(`Server running on ${address}:${port}`));
+   
+
+    // Open Swagger docs
+    openUrl(`${address}:${port}/docs`);
+
+
   } catch (err) {
     console.error('Failed to start server:', err);
   }

@@ -7,8 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "start": "ts-node --compiler-options '{\"module\":\"commonjs\",\"esModuleInterop\":true}' app.ts",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest"
+    "start": "ts-node --compiler-options '{\"module\":\"commonjs\",\"esModuleInterop\":true}' internal/app.ts",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "dev": "nodemon internal/app.ts"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +28,7 @@
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.1.2",
+    "open": "^10.0.3",
     "pino": "^8.18.0",
     "swagger-ui-express": "^5.0.0",
     "ts-node": "^10.9.2",
