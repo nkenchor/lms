@@ -9,31 +9,33 @@ import { AppError } from '../helper/error.helper';
 import { RecordFilter } from '../../core/domain/const/record.filter';
 
 export class GenreController {
-    constructor(private readonly genreService: IGenreServicePort) {}
+    constructor(private readonly genreService: IGenreServicePort) { }
 
+    //get all genres
     async getAllGenres(req: Request, res: Response): Promise<void> {
-      try {
-          const page = parseInt(req.query.page as string) || 1;
-          const pageSize = parseInt(req.query.pageSize as string) || 10;
-          const recordFilter = req.query.recordFilter as RecordFilter;
-          const result = await this.genreService.getAllGenres(page, pageSize, recordFilter);
-  
-  
-          const { genres, total } = result as { genres: Genre[]; total: number; };
-          res.json({ genres, total });
-         
-      } catch (error) {
-        if (error instanceof AppError) {
-            // Error is an instance of AppError; handle it based on its statusCode and message
-            logEvent('ERROR', error.message);
-            res.status(error.statusCode).json({ error });
-        } else {
-            // Handle generic or unexpected errors
-            logEvent('ERROR', 'An unknown error occurred');
-            res.status(500).json({ error: 'Internal Server Error' });
+        try {
+            const page = parseInt(req.query.page as string) || 1;
+            const pageSize = parseInt(req.query.pageSize as string) || 10;
+            const recordFilter = req.query.recordFilter as RecordFilter;
+            const result = await this.genreService.getAllGenres(page, pageSize, recordFilter);
+
+
+            const { genres, total } = result as { genres: Genre[]; total: number; };
+            res.json({ genres, total });
+
+        } catch (error) {
+            if (error instanceof AppError) {
+                // Error is an instance of AppError; handle it based on its statusCode and message
+                logEvent('ERROR', error.message);
+                res.status(error.statusCode).json({ error });
+            } else {
+                // Handle generic or unexpected errors
+                logEvent('ERROR', 'An unknown error occurred');
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
         }
-      }
-  }
+    }
+    //get genre by ref
     async getGenreByReference(req: Request, res: Response): Promise<void> {
         try {
             const genreReference = req.params.genreReference;
@@ -56,6 +58,7 @@ export class GenreController {
         }
     }
 
+    //create genre
     async createGenre(req: Request, res: Response): Promise<void> {
         try {
             const newGenre = req.body as ICreateGenreDto; // Assuming body parsing middleware is used
@@ -73,6 +76,7 @@ export class GenreController {
             }
         }
     }
+    //update genre
 
     async updateGenre(req: Request, res: Response): Promise<void> {
         try {
@@ -97,6 +101,7 @@ export class GenreController {
         }
     }
 
+    //delete genre
     async deleteGenre(req: Request, res: Response): Promise<void> {
         try {
             const genreReference = req.params.genreReference;
@@ -117,8 +122,9 @@ export class GenreController {
                 res.status(500).json({ error: 'Internal Server Error' });
             }
         }
-        
+
     }
+    //soft delete genre
     async softDeleteGenre(req: Request, res: Response): Promise<void> {
         try {
             const genreReference = req.params.genreReference;
@@ -126,7 +132,7 @@ export class GenreController {
             if (success) {
                 res.status(204).send(); // No content to send back
             } else {
-               
+
                 res.status(404).send({ error: 'Genre not found or already deleted' });
             }
         } catch (error) {

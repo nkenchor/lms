@@ -1,5 +1,5 @@
 
-
+//Transaction controller
 import { Request, Response } from 'express';
 
 import { logEvent } from '../middleware/log.middleware';
@@ -12,7 +12,7 @@ import { ICreateBookTransactionDto } from '../../core/domain/dto/book.transactio
 export class BookTransactionController {
     constructor(private readonly transactionService: IBookTransactionServicePort) {}
 
-    
+    //get transactions by reference
     async getTransactionByReference(req: Request, res: Response): Promise<void> {
         try {
             const transactionReference = req.params.transactionReference;
@@ -35,6 +35,7 @@ export class BookTransactionController {
         }
     }
 
+    //borrows a book to a person
     async borrowBook(req: Request, res: Response): Promise<void> {
         try {
             const newBookTransaction = req.body as ICreateBookTransactionDto; // Assuming body parsing middleware is used
@@ -53,6 +54,7 @@ export class BookTransactionController {
         }
     }
 
+    //returns a book
     async returnBook(req: Request, res: Response): Promise<void> {
         try {
             const transactionReference = req.params.transactionReference;

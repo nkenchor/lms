@@ -55,7 +55,7 @@ export class BookController {
             }
         }
     }
-
+ //create book
     async createBook(req: Request, res: Response): Promise<void> {
         try {
             const newBook = req.body as ICreateBookDto; // Assuming body parsing middleware is used
@@ -70,10 +70,12 @@ export class BookController {
                 // Handle generic or unexpected errors
                 logEvent('ERROR', 'An unknown error occurred');
                 res.status(500).json({ error: 'Internal Server Error' });
+                return;
             }
         }
     }
 
+    //update book
     async updateBook(req: Request, res: Response): Promise<void> {
         try {
             const bookReference = req.params.bookReference;

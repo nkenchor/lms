@@ -13,11 +13,13 @@ export class UserService {
         this.userRepository = userRepository;
     }
 
+    //creates a user
     async createUser(userDto: ICreateUserDto): Promise<User> {
       
         return this.userRepository.createUser(new User({ ...userDto }));
     }
 
+    //logins a user
     async loginUser(userDto: ILoginUserDto): Promise<string> {
 
         const result = await this.userRepository.loginUser(userDto);

@@ -107,8 +107,8 @@ const initializeApp = async (): Promise<void> => {
     
 
     app.use((req, res, next) => {
-      next( res.status(404).json(new AppError(ErrorType.NotFound, 'Resource not found')) );
-      
+      const notFoundError = new AppError(ErrorType.NotFound, 'Resource not found');
+      next(notFoundError); // Properly pass the error to the next error handler
     });
 
     // Global error handler - should be the last middleware

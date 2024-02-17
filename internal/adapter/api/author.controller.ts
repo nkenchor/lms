@@ -34,6 +34,7 @@ export class AuthorController {
         }
       }
   }
+  //get author by reference
     async getAuthorByReference(req: Request, res: Response): Promise<void> {
         try {
             const authorReference = req.params.authorReference;
@@ -56,6 +57,7 @@ export class AuthorController {
         }
     }
 
+    //create author
     async createAuthor(req: Request, res: Response): Promise<void> {
         try {
             const newAuthor = req.body as ICreateAuthorDto; // Assuming body parsing middleware is used
@@ -74,6 +76,7 @@ export class AuthorController {
         }
     }
 
+    //update author
     async updateAuthor(req: Request, res: Response): Promise<void> {
         try {
             const authorReference = req.params.authorReference;
@@ -97,6 +100,7 @@ export class AuthorController {
         }
     }
 
+    //delete author
     async deleteAuthor(req: Request, res: Response): Promise<void> {
         try {
             const authorReference = req.params.authorReference;
@@ -118,6 +122,7 @@ export class AuthorController {
             }
         }
     }
+    //soft delete author
     async softDeleteAuthor(req: Request, res: Response): Promise<void> {
         try {
             const authorReference = req.params.authorReference;

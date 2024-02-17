@@ -12,27 +12,33 @@ import { IBookRepositoryPort } from "../../port/repository-port/book.repository.
 export class GenreService implements IGenreServicePort {
   constructor(private readonly genreRepository: IGenreRepositoryPort,private readonly bookRepository: IBookRepositoryPort) {}
 
+  //gets all genres with pagination
   async getAllGenres(page: number, pageSize: number, recordFilter: RecordFilter): Promise<{ genres: Genre[]; total: number }> {
     return this.genreRepository.getAllGenres(page, pageSize,recordFilter);
   }
 
+  //gets genre by ref
   async getGenreByReference(genreReference: string): Promise<Genre> {
     return this.genreRepository.getGenreByReference(genreReference);
   }
 
+  //gets genre by name
   async getGenreByName(name: string): Promise<Genre> {
     return this.genreRepository.getGenreByName(name);
   }
 
+  //creates genre
   async createGenre(dto: ICreateGenreDto): Promise<Genre> {
     return this.genreRepository.createGenre(new Genre({ ...dto }));
   }
 
+  //updates genre
   async updateGenre(genreReference: string, updatedGenre: Genre): Promise<Genre> {
     await this.getGenreByReference(genreReference);
     return this.genreRepository.updateGenre(genreReference, updatedGenre);
   }
 
+  //delete genre
   async deleteGenre(genreReference: string): Promise<boolean> {
     await this.getGenreByReference(genreReference);
     const books = await this.bookRepository.getBooksByGenreReference(genreReference,1,1);

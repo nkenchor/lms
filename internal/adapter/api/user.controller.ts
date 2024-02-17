@@ -28,6 +28,7 @@ export class UserController {
         }
     }
 
+    //login user
     async loginUser(req: Request, res: Response): Promise<void> {
         try {
             const { username, password } = req.body;

@@ -19,7 +19,7 @@ export class UserRepository implements IUserRepositoryPort {
     return this.database.collection<User>(this.collectionName);
   }
 
- 
+ //create user
 async createUser(userDto: ICreateUserDto): Promise<User> {
     // Check if the user already exists
     const existingUser = await this.getCollection().findOne({ username: userDto.username });
@@ -60,7 +60,7 @@ async createUser(userDto: ICreateUserDto): Promise<User> {
     const userToReturn = { ...createdUser, password: '' }; // make password empty here
     return userToReturn;
 }
-
+//logs in user
 async loginUser(userDto: ILoginUserDto): Promise<boolean> {
     const user = await this.getCollection().findOne({ username : userDto.username});
     if (!user) {

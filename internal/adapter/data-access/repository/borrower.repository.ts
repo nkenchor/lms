@@ -19,7 +19,7 @@ export class BorrowerRepository implements IBorrowerRepositoryPort {
 
 
   
- 
+ //create borrower
   async createBorrower(borrower: Borrower): Promise<Borrower> {
      // First, check if an author with the same first and last name already exists
      const existingBorrower = await this.getCollection().findOne({
@@ -43,7 +43,7 @@ export class BorrowerRepository implements IBorrowerRepositoryPort {
     return borrower;
   }
   
-
+  //get borrower by reference
   async getBorrowerByReference(borrowerReference: string): Promise<Borrower> {
     const borrower = await this.getCollection().findOne({borrowerReference: borrowerReference });
     if (!borrower) {
@@ -53,6 +53,7 @@ export class BorrowerRepository implements IBorrowerRepositoryPort {
     }
     return borrower;
   }
+  //get borrower by name
   async getBorrowerByName(name: string): Promise<Borrower> {
     // Using a regex to search for borrowers that contain the 'name' string, case-insensitive
     const borrower = await this.getCollection().findOne({ name: { $regex: name, $options: 'i' } });
@@ -66,7 +67,7 @@ export class BorrowerRepository implements IBorrowerRepositoryPort {
     return borrower;
   }
   
-
+//update borrower
   async updateBorrower(borrowerReference: string, updatedBorrower: Borrower): Promise<Borrower> {
     const collection: Collection<Borrower> = this.getCollection();
     
@@ -86,7 +87,7 @@ export class BorrowerRepository implements IBorrowerRepositoryPort {
     // Return the updated borrower
     return result;
   }
-
+  //delete borrower
   async deleteBorrower(borrowerReference: string): Promise<boolean> {
     
    
@@ -100,6 +101,7 @@ export class BorrowerRepository implements IBorrowerRepositoryPort {
     
     return true;
   }
+  //soft delete borrower
   async softDeleteBorrower(borrowerReference: string): Promise<boolean> {
     const result = await this.getCollection().updateOne(
       { borrowerReference: borrowerReference },
@@ -114,6 +116,7 @@ export class BorrowerRepository implements IBorrowerRepositoryPort {
     return true;
   }
 
+  //get all borrowers
   async getAllBorrowers(page: number, pageSize: number, filter: RecordFilter = RecordFilter.All): Promise<{ borrowers: Borrower[]; total: number }> {
     logEvent("INFO", "Getting all borrowers with filter: " + filter);
     try {

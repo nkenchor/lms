@@ -14,6 +14,7 @@ export class BookTransactionService implements IBookTransactionServicePort {
     private borrowerService: BorrowerService 
     ) {}
 
+    //borrows a book
   async borrowBook(transaction: ICreateBookTransactionDto): Promise<BookTransaction> {
       // Check if the book exists and has available copies
       const book = await this.bookService.getBookByReference(transaction.bookReference);
@@ -47,6 +48,7 @@ export class BookTransactionService implements IBookTransactionServicePort {
     }
     
 
+    //returns a book
   async returnBook(transactionReference: string, returnDate: Date): Promise<BookTransaction> {
     const transaction = await this.transactionRepository.getTransactionByReference(transactionReference); 
     transaction.status = BookTransactionStatus.Returned;

@@ -15,11 +15,8 @@ export class GenreRepository implements IGenreRepositoryPort {
   private getCollection(): Collection<Genre> {
     return this.database.collection<Genre>(this.collectionName);
   }
-
-
-
   
- 
+ //create genre
   async createGenre(genre: Genre): Promise<Genre> {
      // First, check if an author with the same first and last name already exists
      const existingGenre = await this.getCollection().findOne({
@@ -41,7 +38,7 @@ export class GenreRepository implements IGenreRepositoryPort {
     return genre;
   }
   
-
+  //get genre by reference
   async getGenreByReference(genreReference: string): Promise<Genre> {
     const genre = await this.getCollection().findOne({genreReference: genreReference });
     if (!genre) {
@@ -51,6 +48,8 @@ export class GenreRepository implements IGenreRepositoryPort {
     }
     return genre;
   }
+
+  //get genre by name
   async getGenreByName(name: string): Promise<Genre> {
     // Using a regex to search for genres that contain the 'name' string, case-insensitive
     const genre = await this.getCollection().findOne({ name: { $regex: name, $options: 'i' } });
@@ -64,7 +63,7 @@ export class GenreRepository implements IGenreRepositoryPort {
     return genre;
   }
   
-
+ //update genre
   async updateGenre(genreReference: string, updatedGenre: Genre): Promise<Genre> {
     const collection: Collection<Genre> = this.getCollection();
     
@@ -85,6 +84,7 @@ export class GenreRepository implements IGenreRepositoryPort {
     return result;
   }
 
+  //delete genre
   async deleteGenre(genreReference: string): Promise<boolean> {
     
    
@@ -98,6 +98,8 @@ export class GenreRepository implements IGenreRepositoryPort {
     
     return true;
   }
+
+  //soft delete a genre
   async softDeleteGenre(genreReference: string): Promise<boolean> {
     const result = await this.getCollection().updateOne(
       { genreReference: genreReference },
@@ -112,6 +114,7 @@ export class GenreRepository implements IGenreRepositoryPort {
     return true;
   }
 
+  //get all genres
   async getAllGenres(page: number, pageSize: number, filter: RecordFilter = RecordFilter.All): Promise<{ genres: Genre[]; total: number }> {
     logEvent("INFO", "Getting all genres with filter: " + filter);
     try {

@@ -11,10 +11,12 @@ export class BookTransactionRepository implements IBookTransactionRepositoryPort
     this.database = database;
   }
 
+  
   private getCollection(): Collection<BookTransaction> {
     return this.database.collection<BookTransaction>(this.collectionName);
   }
 
+  //creates a book transaction
   async createTransaction(transaction: BookTransaction): Promise<BookTransaction> {
     try {
       const result = await this.getCollection().insertOne(transaction);
@@ -29,7 +31,7 @@ export class BookTransactionRepository implements IBookTransactionRepositoryPort
     }
   }
 
-  
+  //update transaction
   async updateTransaction(transactionReference: string, transaction: BookTransaction): Promise<BookTransaction> {
     try {
       const result = await this.getCollection().findOneAndUpdate(
@@ -48,6 +50,7 @@ export class BookTransactionRepository implements IBookTransactionRepositoryPort
     }
   }
 
+  //get transaction by reference
   async getTransactionByReference(transactionReference: string): Promise<BookTransaction> {
     try {
       const transaction = await this.getCollection().findOne({ transactionReference: transactionReference });

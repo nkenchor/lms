@@ -17,9 +17,7 @@ export class BookRepository implements IBookRepositoryPort {
   }
 
 
-
-  
- 
+ //create book
   async createBook(book: Book): Promise<Book> {
      // First, check if an author with the same first and last name already exists
      const existingBook = await this.getCollection().findOne({
@@ -41,7 +39,7 @@ export class BookRepository implements IBookRepositoryPort {
     return book;
   }
   
-
+//get book by reference
   async getBookByReference(bookReference: string): Promise<Book> {
     const book = await this.getCollection().findOne({bookReference: bookReference });
     if (!book) {
@@ -51,6 +49,7 @@ export class BookRepository implements IBookRepositoryPort {
     }
     return book;
   }
+  //get book by name
   async getBookByName(title: string): Promise<Book> {
     // Using a regex to search for books that contain the 'name' string, case-insensitive
     const book = await this.getCollection().findOne({ title: { $regex: title, $options: 'i' } });
@@ -64,7 +63,7 @@ export class BookRepository implements IBookRepositoryPort {
     return book;
   }
   
-
+//updates a book
   async updateBook(bookReference: string, updatedBook: Book): Promise<Book> {
     const collection: Collection<Book> = this.getCollection();
     
@@ -85,6 +84,7 @@ export class BookRepository implements IBookRepositoryPort {
     return result;
   }
 
+  //deletes a book from the collection
   async deleteBook(bookReference: string): Promise<boolean> {
     
    
@@ -98,6 +98,8 @@ export class BookRepository implements IBookRepositoryPort {
     
     return true;
   }
+
+  //soft deletes a book
   async softDeleteBook(bookReference: string): Promise<boolean> {
     const result = await this.getCollection().updateOne(
       { bookReference: bookReference },
@@ -112,6 +114,7 @@ export class BookRepository implements IBookRepositoryPort {
     return true;
   }
 
+  //gets all books
   async getAllBooks(page: number, pageSize: number, filter: RecordFilter = RecordFilter.All): Promise<{ books: Book[]; total: number }> {
     logEvent("INFO", "Getting all books with filter: " + filter);
     try {
@@ -146,6 +149,7 @@ export class BookRepository implements IBookRepositoryPort {
       throw new AppError(ErrorType.ServerError, 'Unable to fetch books. ' + error);
     }
   }
+  //gets books by genre reference
   async getBooksByGenreReference(genreReference: string, page: number = 1, pageSize: number = 10): Promise<{ books: Book[]; total: number }> {
     const skip = (page - 1) * pageSize;
     try {
@@ -160,6 +164,7 @@ export class BookRepository implements IBookRepositoryPort {
     }
   }
 
+  //gets books by author reference
   async getBooksByAuthorReference(authorReference: string, page: number = 1, pageSize: number = 10): Promise<{ books: Book[]; total: number }> {
     const skip = (page - 1) * pageSize;
     try {
