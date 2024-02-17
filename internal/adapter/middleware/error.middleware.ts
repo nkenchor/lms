@@ -23,7 +23,6 @@ export const ErrorMiddleware = (err: unknown, req: Request, res: Response, next:
         // Use the ErrorMessage function for unknown errors
         const errorResponse: ErrorResponse = ErrorMessage(ErrorType.InternalError, message);
         res.status(errorResponse.code).json(errorResponse);
-        return; 
     } else {
         // Handle other types of unknown errors
         console.error(`Unhandled Error: `, err);

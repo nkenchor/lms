@@ -70,7 +70,6 @@ export class BookController {
                 // Handle generic or unexpected errors
                 logEvent('ERROR', 'An unknown error occurred');
                 res.status(500).json({ error: 'Internal Server Error' });
-                return;
             }
         }
     }
