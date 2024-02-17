@@ -10,11 +10,11 @@ import { IBookRepositoryPort } from "../../port/repository-port/book.repository.
 
 
 export class GenreService implements IGenreServicePort {
-  constructor(private readonly genreRepository: IGenreRepositoryPort,private readonly bookRepository: IBookRepositoryPort) {}
+  constructor(private readonly genreRepository: IGenreRepositoryPort, private readonly bookRepository: IBookRepositoryPort) { }
 
   //gets all genres with pagination
   async getAllGenres(page: number, pageSize: number, recordFilter: RecordFilter): Promise<{ genres: Genre[]; total: number }> {
-    return this.genreRepository.getAllGenres(page, pageSize,recordFilter);
+    return this.genreRepository.getAllGenres(page, pageSize, recordFilter);
   }
 
   //gets genre by ref
@@ -41,10 +41,10 @@ export class GenreService implements IGenreServicePort {
   //delete genre
   async deleteGenre(genreReference: string): Promise<boolean> {
     await this.getGenreByReference(genreReference);
-    const books = await this.bookRepository.getBooksByGenreReference(genreReference,1,1);
+    const books = await this.bookRepository.getBooksByGenreReference(genreReference, 1, 1);
     if (books.total > 0) {
       logEvent("ERROR", `unable to delete genre. books are still tied to this genre`);
-      throw new AppError(ErrorType.ForbiddenError,`unable to delete genre. books are still tied to this genre`);
+      throw new AppError(ErrorType.ForbiddenError, `unable to delete genre. books are still tied to this genre`);
     }
     return this.genreRepository.deleteGenre(genreReference);
   }

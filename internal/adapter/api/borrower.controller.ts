@@ -9,31 +9,31 @@ import { AppError } from '../helper/error.helper';
 import { RecordFilter } from '../../core/domain/const/record.filter';
 
 export class BorrowerController {
-    constructor(private readonly borrowerService: IBorrowerServicePort) {}
+    constructor(private readonly borrowerService: IBorrowerServicePort) { }
 
     async getAllBorrowers(req: Request, res: Response): Promise<void> {
-      try {
-          const page = parseInt(req.query.page as string) || 1;
-          const pageSize = parseInt(req.query.pageSize as string) || 10;
-          const recordFilter = req.query.recordFilter as RecordFilter;
-          const result = await this.borrowerService.getAllBorrowers(page, pageSize,recordFilter);
-  
-  
-          const { borrowers, total } = result as { borrowers: Borrower[]; total: number; };
-          res.json({ borrowers, total });
-         
-      } catch (error) {
-        if (error instanceof AppError) {
-            // Error is an instance of AppError; handle it based on its statusCode and message
-            logEvent('ERROR', error.message);
-            res.status(error.statusCode).json({ error });
-        } else {
-            // Handle generic or unexpected errors
-            logEvent('ERROR', 'An unknown error occurred');
-            res.status(500).json({ error: 'Internal Server Error' });
+        try {
+            const page = parseInt(req.query.page as string) || 1;
+            const pageSize = parseInt(req.query.pageSize as string) || 10;
+            const recordFilter = req.query.recordFilter as RecordFilter;
+            const result = await this.borrowerService.getAllBorrowers(page, pageSize, recordFilter);
+
+
+            const { borrowers, total } = result as { borrowers: Borrower[]; total: number; };
+            res.json({ borrowers, total });
+
+        } catch (error) {
+            if (error instanceof AppError) {
+                // Error is an instance of AppError; handle it based on its statusCode and message
+                logEvent('ERROR', error.message);
+                res.status(error.statusCode).json({ error });
+            } else {
+                // Handle generic or unexpected errors
+                logEvent('ERROR', 'An unknown error occurred');
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
         }
-      }
-  }
+    }
     async getBorrowerByReference(req: Request, res: Response): Promise<void> {
         try {
             const borrowerReference = req.params.borrowerReference;

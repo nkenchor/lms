@@ -7,10 +7,10 @@ import { RecordFilter } from "../domain/const/record.filter";
 
 
 export class AuthorService implements IAuthorServicePort {
-  constructor(private readonly authorRepository: IAuthorRepositoryPort) {}
+  constructor(private readonly authorRepository: IAuthorRepositoryPort) { }
 
-  async getAllAuthors(page: number, pageSize: number,filter: RecordFilter): Promise<{ authors: Author[]; total: number }> {
-    return this.authorRepository.getAllAuthors(page, pageSize,filter);
+  async getAllAuthors(page: number, pageSize: number, filter: RecordFilter): Promise<{ authors: Author[]; total: number }> {
+    return this.authorRepository.getAllAuthors(page, pageSize, filter);
   }
 
   async getAuthorByReference(authorReference: string): Promise<Author> {

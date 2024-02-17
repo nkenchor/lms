@@ -8,11 +8,11 @@ import { RecordFilter } from "../domain/const/record.filter";
 
 
 export class BorrowerService implements IBorrowerServicePort {
-  constructor(private readonly borrowerRepository: IBorrowerRepositoryPort) {}
+  constructor(private readonly borrowerRepository: IBorrowerRepositoryPort) { }
 
   //gets all borrowers with pagination
-  async getAllBorrowers(page: number, pageSize: number,filter: RecordFilter): Promise<{ borrowers: Borrower[]; total: number }> {
-    return this.borrowerRepository.getAllBorrowers(page, pageSize,filter);
+  async getAllBorrowers(page: number, pageSize: number, filter: RecordFilter): Promise<{ borrowers: Borrower[]; total: number }> {
+    return this.borrowerRepository.getAllBorrowers(page, pageSize, filter);
   }
 
   //gets borrowers by reference
@@ -44,10 +44,10 @@ export class BorrowerService implements IBorrowerServicePort {
     return this.borrowerRepository.softDeleteBorrower(borrowerReference);
   }
   //borrows a book
-  async borrowBook(borrowerReference: string,bookBorrowed: BookBorrowed): Promise<boolean> {
+  async borrowBook(borrowerReference: string, bookBorrowed: BookBorrowed): Promise<boolean> {
     try {
       const borrower = await this.borrowerRepository.getBorrowerByReference(borrowerReference);
-     
+
       borrower.borrowBook(bookBorrowed)
       await this.updateBorrower(borrowerReference, borrower);
       return true;
@@ -62,7 +62,7 @@ export class BorrowerService implements IBorrowerServicePort {
     try {
       const borrower = await this.borrowerRepository.getBorrowerByReference(borrowerReference);
 
-      borrower.returnBook(bookReference,new Date())
+      borrower.returnBook(bookReference, new Date())
 
       await this.updateBorrower(borrowerReference, borrower);
       return true;

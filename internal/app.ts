@@ -10,7 +10,7 @@ import { genreRoutes } from './adapter/routes/genre.routes';
 import { LogErrorMiddleware, LogRequestMiddleware, LogResponseMiddleware } from './adapter/middleware/log.middleware';
 import { AppError, ErrorType } from './adapter/helper/error.helper';
 import { ErrorMiddleware } from './adapter/middleware/error.middleware';
-import config from '../configuration/ts/config'; 
+import config from '../configuration/ts/config';
 import { UserRepository } from './adapter/data-access/repository/user.repository';
 import { UserController } from './adapter/api/user.controller';
 import { UserService } from './core/service/user.service';
@@ -62,7 +62,7 @@ const initializeApp = async (): Promise<void> => {
     // Database connection
     const database = await Database.connect();
     console.log('Database connected successfully');
-    
+
     // Repositories
     const authorRepository = new AuthorRepository(database);
     const bookRepository = new BookRepository(database);
@@ -93,9 +93,9 @@ const initializeApp = async (): Promise<void> => {
     seedBorrowers(borrowerRepository);
     seedBooks(bookRepository);
     seedUsers(userRepository);
-      
- 
-    
+
+
+
     // Routes
     genreRoutes(app, genreController);
     userRoutes(app, userController);
@@ -104,7 +104,7 @@ const initializeApp = async (): Promise<void> => {
     borrowerRoutes(app, borrowerController);
     bookTransactionRoutes(app, bookTransactionController);
 
-    
+
 
     app.use((req, res, next) => {
       const notFoundError = new AppError(ErrorType.NotFound, 'Resource not found');
@@ -113,12 +113,12 @@ const initializeApp = async (): Promise<void> => {
 
     // Global error handler - should be the last middleware
     app.use(ErrorMiddleware);
-  
-   
-   
+
+
+
     // Start server
     app.listen(port, () => console.log(`Server running on ${address}:${port}`));
-   
+
 
     // Open Swagger docs
     openUrl(`${address}:${port}/docs`);

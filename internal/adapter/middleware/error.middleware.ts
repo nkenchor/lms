@@ -19,7 +19,7 @@ export const ErrorMiddleware = (err: unknown, req: Request, res: Response, next:
         if (typeof genericError.message === 'string') {
             message = genericError.message;
         }
-        
+
         // Use the ErrorMessage function for unknown errors
         const errorResponse: ErrorResponse = ErrorMessage(ErrorType.InternalError, message);
         res.status(errorResponse.code).json(errorResponse);

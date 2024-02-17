@@ -3,7 +3,7 @@ import { Author } from "../../core/domain/model/author.model";
 
 
 export interface IAuthorRepositoryPort {
-  getAllAuthors(page: number, pageSize: number,filter: RecordFilter): Promise<{ authors: Author[]; total: number }>;
+  getAllAuthors(page: number, pageSize: number, filter: RecordFilter): Promise<{ authors: Author[]; total: number }>;
   getAuthorByReference(authorReference: string): Promise<Author>;
   createAuthor(author: Author): Promise<Author>;
   updateAuthor(authorReference: string, updatedAuthor: Author): Promise<Author>;

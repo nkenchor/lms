@@ -79,11 +79,7 @@ export class BookService implements IBookServicePort {
     if (genres) bookToUpdate.genres = genres;
     if (authors) bookToUpdate.authors = authors;
 
-
-
     await this.bookRepository.updateBook(bookReference, bookToUpdate);
-
-
     return bookToUpdate;
   }
 

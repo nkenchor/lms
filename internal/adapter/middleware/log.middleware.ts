@@ -36,7 +36,7 @@ if (!fs.existsSync(logDir)) {
 // Logs request and response data to a file
 function logReqandRes(req: Request, res: Response, level: string, message: string | Record<string, any>): void {
   const timestamp = new Date().toISOString();
-    // Construct log data from request and response
+  // Construct log data from request and response
   // Includes comprehensive request/response details and system info
   const logData: LogData = {
     timestamp,
@@ -49,38 +49,38 @@ function logReqandRes(req: Request, res: Response, level: string, message: strin
     requestUrl: req.originalUrl,
     requestProtocol: req.protocol,
     requestHeaders: Object.entries(req.headers).reduce((acc, [key, value]) => {
-        if (typeof value === 'string') {
-            acc[key] = value;
-        } else if (Array.isArray(value) && value.length > 0) {
-            acc[key] = value.join(',');
-        }
-        return acc;
+      if (typeof value === 'string') {
+        acc[key] = value;
+      } else if (Array.isArray(value) && value.length > 0) {
+        acc[key] = value.join(',');
+      }
+      return acc;
     }, {} as Record<string, string>),
     requestQuery: Object.entries(req.query).reduce((acc, [key, value]) => {
-        if (typeof value === 'string') {
-            acc[key] = value;
-        } else if (Array.isArray(value) && value.length > 0) {
-            acc[key] = value.join(',');
-        }
-        return acc;
+      if (typeof value === 'string') {
+        acc[key] = value;
+      } else if (Array.isArray(value) && value.length > 0) {
+        acc[key] = value.join(',');
+      }
+      return acc;
     }, {} as Record<string, string>),
-    
+
     requestCookies: req.cookies,
     requestBody: req.body,
     responseHeaders: Object.entries(res.getHeaders()).reduce((acc, [key, value]) => {
-        if (typeof value === 'string') {
-            acc[key] = value;
-        } else if (Array.isArray(value) && value.length > 0) {
-            acc[key] = value.join(',');
-        }
-        return acc;
+      if (typeof value === 'string') {
+        acc[key] = value;
+      } else if (Array.isArray(value) && value.length > 0) {
+        acc[key] = value.join(',');
+      }
+      return acc;
     }, {} as Record<string, string>),
-    
-    responseCookies: {}, 
-    responseBody: res.locals.body, 
+
+    responseCookies: {},
+    responseBody: res.locals.body,
     requestDuration: Date.now() - (res.locals.startTime || Date.now()), // Handle case when startTime is not set
     correlationId: Array.isArray(req.headers['x-correlation-id']) ? req.headers['x-correlation-id'][0] : (req.headers['x-correlation-id'] as string) || uuidv4(),
- 
+
     logId: uuidv4(),
   };
 
@@ -92,45 +92,45 @@ function logReqandRes(req: Request, res: Response, level: string, message: strin
 }
 // Logs general events not tied to specific requests
 function logEvent(level: string, message: any): void {
-    const timestamp = new Date().toISOString();
-    const logData = {
-      timestamp,
-      level,
-      appName: 'lms',
-      message,
-     
-    };
-  
-    const logLine = JSON.stringify(logData);
+  const timestamp = new Date().toISOString();
+  const logData = {
+    timestamp,
+    level,
+    appName: 'lms',
+    message,
 
-    const logFilePath = `./logs/${logData.timestamp.split('T')[0]}.log`;
-    fs.appendFileSync(logFilePath, `${logLine}\n`);
+  };
+
+  const logLine = JSON.stringify(logData);
+
+  const logFilePath = `./logs/${logData.timestamp.split('T')[0]}.log`;
+  fs.appendFileSync(logFilePath, `${logLine}\n`);
 }
 // Middleware to capture and log response data
 function LogRequestMiddleware(req: Request, res: Response, next: NextFunction): void {
   res.locals.startTime = Date.now(); // Start measuring request duration
   logReqandRes(req, res, 'INFO', 'Incoming request');
   // Overrides res.send to capture response body and log it
-    // Calls original res.send after logging
+  // Calls original res.send after logging
   next();
 }
 
 function LogResponseMiddleware(req: Request, res: Response, next: NextFunction): void {
-    const originalSend = res.send;
-  
-    res.send = function (body?: any): any {
-      const responseData = {
-        statusCode: res.statusCode,
-        body,
-      };
-  
-      logReqandRes(req, res, 'INFO', responseData); // Logging response data
-      return originalSend.call(res, body);
+  const originalSend = res.send;
+
+  res.send = function (body?: any): any {
+    const responseData = {
+      statusCode: res.statusCode,
+      body,
     };
-  
-    next();
+
+    logReqandRes(req, res, 'INFO', responseData); // Logging response data
+    return originalSend.call(res, body);
+  };
+
+  next();
 }
-  
+
 // Middleware for logging errors
 function LogErrorMiddleware(err: any, req: Request, res: Response, next: NextFunction): void {
   const errorData = {
@@ -143,4 +143,4 @@ function LogErrorMiddleware(err: any, req: Request, res: Response, next: NextFun
   next(err);
 }
 
-export { LogRequestMiddleware, LogResponseMiddleware , LogErrorMiddleware,  logEvent };
+export { LogRequestMiddleware, LogResponseMiddleware, LogErrorMiddleware, logEvent };

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 // Enumeration of custom error types for consistent error handling across the application
 export enum ErrorType {
-   // Each error type corresponds to a specific kind of error that can occur within the application
+  // Each error type corresponds to a specific kind of error that can occur within the application
   ValidationError = 'VALIDATION_ERROR',
   RedisSetupError = 'REDIS_SETUP_ERROR',
   NoRecordError = 'NO_RECORD_FOUND_ERROR',
@@ -64,7 +64,7 @@ const CustomError: Record<ErrorType, number> = {
   [ErrorType.Timeout]: 408,
   [ErrorType.UnsupportedMediaType]: 415,
   [ErrorType.PreconditionFailed]: 412,
-  [ErrorType.TooManyRequests]: 429, 
+  [ErrorType.TooManyRequests]: 429,
   [ErrorType.RequestHeaderFieldsTooLarge]: 431,
   [ErrorType.InternalError]: 500,
   [ErrorType.PaymentError]: 402,
@@ -117,7 +117,7 @@ export class AppError extends Error {
     // Set the prototype explicitly.
     Object.setPrototypeOf(this, AppError.prototype);
   }
-// Method to serialize the error object to JSON format for API responses
+  // Method to serialize the error object to JSON format for API responses
   toJSON() {
     return {
       statusCode: this.statusCode,

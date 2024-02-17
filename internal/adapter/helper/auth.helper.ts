@@ -1,6 +1,6 @@
 // Import JSON Web Token (JWT) library and application configuration
 import jwt from 'jsonwebtoken';
-import config from '../../../configuration/ts/config'; 
+import config from '../../../configuration/ts/config';
 
 /**
  * Generates a JWT for a given username.
@@ -15,7 +15,7 @@ export const generateToken = (username: string) => {
 
   // Sign and create a token with the username as payload, using the secret key and expiration time from config
   const token = jwt.sign({ username: username }, secretKey, { expiresIn });
-  
+
   // Return the generated token
   return token;
 };

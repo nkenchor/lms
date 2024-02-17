@@ -6,7 +6,7 @@ import { logEvent } from '../middleware/log.middleware';
 import { AppError } from '../helper/error.helper';
 
 export class UserController {
-    constructor(private readonly userService: IUserServicePort) {}
+    constructor(private readonly userService: IUserServicePort) { }
 
     async createUser(req: Request, res: Response): Promise<void> {
         try {
@@ -45,9 +45,9 @@ export class UserController {
                 res.status(500).json({ error: 'Internal Server Error' });
             }
         }
-        
+
     }
 
-  
+
 }
 

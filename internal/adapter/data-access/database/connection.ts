@@ -1,6 +1,6 @@
 // Import MongoDB client and database types, and application configuration
 import { MongoClient, Db } from 'mongodb';
-import config from '../../../../configuration/ts/config'; 
+import config from '../../../../configuration/ts/config';
 
 // Extract database connection URL and database name from configuration
 const url = config.dbUrl;

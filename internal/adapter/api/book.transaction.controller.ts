@@ -10,7 +10,7 @@ import { BookTransaction } from '../../core/domain/model/book.transaction.model'
 import { ICreateBookTransactionDto } from '../../core/domain/dto/book.transaction.dto';
 
 export class BookTransactionController {
-    constructor(private readonly transactionService: IBookTransactionServicePort) {}
+    constructor(private readonly transactionService: IBookTransactionServicePort) { }
 
     //get transactions by reference
     async getTransactionByReference(req: Request, res: Response): Promise<void> {
@@ -59,7 +59,7 @@ export class BookTransactionController {
         try {
             const transactionReference = req.params.transactionReference;
             const { returnDate } = req.body;
-          
+
             const result = await this.transactionService.returnBook(transactionReference, returnDate);
             if (result) {
                 res.json(result);
@@ -79,6 +79,6 @@ export class BookTransactionController {
         }
     }
 
-   
-    
+
+
 }
