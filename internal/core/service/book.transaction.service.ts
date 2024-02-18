@@ -55,10 +55,7 @@ export class BookTransactionService implements IBookTransactionServicePort {
     transaction.returnDate = returnDate;
     // Increment the available copies of the book
     await this.bookService.increaseAvailableCopies(transaction.bookReference);
-
-   
     await this.borrowerService.returnBook(transaction.borrowerReference, transaction.bookReference, returnDate);
-
     return this.transactionRepository.updateTransaction(transaction.transactionReference,transaction);
 
   }

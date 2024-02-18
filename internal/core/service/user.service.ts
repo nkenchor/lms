@@ -15,7 +15,6 @@ export class UserService {
 
     //creates a user
     async createUser(userDto: ICreateUserDto): Promise<User> {
-
         return this.userRepository.createUser(new User({ ...userDto }));
     }
 

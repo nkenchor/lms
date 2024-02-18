@@ -88,8 +88,7 @@ export class Book {
       throw new AppError(ErrorType.ForbiddenError,"No available copies to borrow");
 
     };
-   
-
+  
     this.availableCopies -= 1;
     this.updatedAt = new Date(); // Update the updatedAt timestamp to reflect the restoration time
   }

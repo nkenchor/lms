@@ -17,8 +17,6 @@ export class AuthorController {
             const pageSize = parseInt(req.query.pageSize as string) || 10;
             const recordFilter = req.query.recordFilter as RecordFilter;
             const result = await this.authorService.getAllAuthors(page, pageSize, recordFilter);
-
-
             const { authors, total } = result as { authors: Author[]; total: number; };
             res.json({ authors, total });
 
