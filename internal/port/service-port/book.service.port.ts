@@ -11,7 +11,7 @@ export interface IBookServicePort {
   updateBook(bookReference: string, updatedBook: IUpdateBookDto): Promise<Book>;
   deleteBook(bookReference: string): Promise<boolean>;
   softDeleteBook(bookReference: string): Promise<boolean>;
-  getBookByName(name: string): Promise<Book>
+  getBookByTitle(title: string,page: number, pageSize: number): Promise<{ books: Book[]; total: number }>;
   increaseAvailableCopies(bookReference:string): Promise<boolean>;
   decreaseAvailableCopies(bookReference:string): Promise<boolean>;
   getBooksByAuthorReference(authorReference: string, page: number, pageSize: number ): Promise<{ books: Book[]; total: number }>;

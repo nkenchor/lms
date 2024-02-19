@@ -23,8 +23,8 @@ export class GenreService implements IGenreServicePort {
   }
 
   //gets genre by name
-  async getGenreByName(name: string): Promise<Genre> {
-    return this.genreRepository.getGenreByName(name);
+  async getGenreByName(name: string,page: number, pageSize: number): Promise<{ genres: Genre[]; total: number }> {
+    return this.genreRepository.getGenreByName(name,page, pageSize);
   }
 
   //creates genre

@@ -9,5 +9,5 @@ export interface IBorrowerRepositoryPort {
   updateBorrower(borrowerReference: string, updatedBorrower: Borrower): Promise<Borrower>;
   deleteBorrower(borrowerReference: string): Promise<boolean>;
   softDeleteBorrower(borrowerReference: string): Promise<boolean>;
-  getBorrowerByName(name: string): Promise<Borrower>
+  getBorrowerByName(name: string,page: number, pageSize: number): Promise<{ borrowers: Borrower[]; total: number }>;
 }

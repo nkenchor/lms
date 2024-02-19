@@ -50,21 +50,32 @@ export class BookRepository implements IBookRepositoryPort {
     return book;
   }
   //get book by name
-  async getBookByName(title: string): Promise<Book> {
-    // Using a regex to search for books that contain the 'name' string, case-insensitive
-    const book = await this.getCollection().findOne({ title: { $regex: title, $options: 'i' } });
+  async getBookByTitle(title: string, page: number, pageSize: number): Promise<{ books: Book[]; total: number }> {
+    logEvent("INFO", "Getting all books with title: " + title);
+    try {
+        const skip = (page - 1) * pageSize;
+        // Corrected the query to search by title, not name
+        let query = { title: { $regex: title, $options: 'i' } };
   
-    if (!book) {
-      const errorMessage = `Book not found for name: ${title}`;
-      logEvent("ERROR", errorMessage);
-      throw new AppError(ErrorType.NoRecordError, errorMessage);
+        // Use Promise.all to execute both queries in parallel
+        const [books, total] = await Promise.all([
+            this.getCollection().find(query).skip(skip).limit(pageSize).toArray(), // Convert cursor to array
+            this.getCollection().countDocuments(query),
+        ]);
+  
+        // No need to throw an error for empty list, as it's a valid scenario
+        return { books, total };
+    } catch (error) {
+        console.error("Error fetching books:", error);
+        logEvent("ERROR", 'Unable to fetch books. ' + error);
+        throw new AppError(ErrorType.ServerError, 'Unable to fetch books. ' + error);
     }
-  
-    return book;
   }
   
+
+  
 //updates a book
-  async updateBook(bookReference: string, updatedBook: Book): Promise<Book> {
+  async updateBook(bookReference: string, updatedBook:  Partial<Book>): Promise<Book> {
     const collection: Collection<Book> = this.getCollection();
     
     // Attempt to update the book directly without a preliminary fetch

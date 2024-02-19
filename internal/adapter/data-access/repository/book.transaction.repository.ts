@@ -32,7 +32,7 @@ export class BookTransactionRepository implements IBookTransactionRepositoryPort
   }
 
   //update transaction
-  async updateTransaction(transactionReference: string, transaction: BookTransaction): Promise<BookTransaction> {
+  async updateTransaction(transactionReference: string, transaction:  Partial<BookTransaction>): Promise<BookTransaction> {
     try {
       const result = await this.getCollection().findOneAndUpdate(
         { transactionReference: transactionReference },

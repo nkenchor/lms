@@ -9,7 +9,7 @@ export interface IBookRepositoryPort {
   updateBook(bookReference: string, updatedBook: Book): Promise<Book>;
   deleteBook(bookReference: string): Promise<boolean>;
   softDeleteBook(bookReference: string): Promise<boolean>;
-  getBookByName(name: string): Promise<Book>
+  getBookByTitle(title: string,page: number, pageSize: number): Promise<{ books: Book[]; total: number }>;
   getBooksByAuthorReference(authorReference: string, page: number, pageSize: number ): Promise<{ books: Book[]; total: number }>;
   getBooksByGenreReference(genreReference: string, page: number, pageSize: number): Promise<{ books: Book[]; total: number }>
   

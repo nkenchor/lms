@@ -54,21 +54,35 @@ export class BorrowerRepository implements IBorrowerRepositoryPort {
     return borrower;
   }
   //get borrower by name
-  async getBorrowerByName(name: string): Promise<Borrower> {
-    // Using a regex to search for borrowers that contain the 'name' string, case-insensitive
-    const borrower = await this.getCollection().findOne({ name: { $regex: name, $options: 'i' } });
-  
-    if (!borrower) {
-      const errorMessage = `Borrower not found for name: ${name}`;
-      logEvent("ERROR", errorMessage);
-      throw new AppError(ErrorType.NoRecordError, errorMessage);
+  async getBorrowerByName(name: string, page: number, pageSize: number): Promise<{ borrowers: Borrower[]; total: number }> {
+    logEvent("INFO", "Getting all borrowers with name: " + name);
+    try {
+        const skip = (page - 1) * pageSize;
+        let query = {
+            $or: [
+                { firstName: { $regex: name, $options: 'i' } },
+                { lastName: { $regex: name, $options: 'i' } }
+            ]
+        }; // Case-insensitive search for the name in both firstName and lastName
+
+        // Use Promise.all to execute both queries in parallel
+        const [borrowers, total] = await Promise.all([
+            this.getCollection().find(query).skip(skip).limit(pageSize).toArray(), // Convert cursor to array
+            this.getCollection().countDocuments(query),
+        ]);
+
+        // No need to throw an error for empty list, as it's a valid scenario
+        return { borrowers, total };
+    } catch (error) {
+        console.error("Error fetching borrowers:", error);
+        logEvent("ERROR", 'Unable to fetch borrowers. ' + error);
+        throw new AppError(ErrorType.ServerError, 'Unable to fetch borrowers. ' + error);
     }
-  
-    return borrower;
-  }
+}
+
   
 //update borrower
-  async updateBorrower(borrowerReference: string, updatedBorrower: Borrower): Promise<Borrower> {
+  async updateBorrower(borrowerReference: string, updatedBorrower:  Partial<Borrower>): Promise<Borrower> {
     const collection: Collection<Borrower> = this.getCollection();
     
     // Attempt to update the borrower directly without a preliminary fetch

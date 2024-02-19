@@ -17,8 +17,8 @@ export class AuthorService implements IAuthorServicePort {
     return this.authorRepository.getAuthorByReference(authorReference);
   }
 
-  async getAuthorByName(name: string): Promise<Author> {
-    return this.authorRepository.getAuthorByName(name);
+  async getAuthorByName(name: string,page: number, pageSize: number): Promise<{ authors: Author[]; total: number }>  {
+    return this.authorRepository.getAuthorByName(name,page, pageSize);
   }
 
   async createAuthor(dto: ICreateAuthorDto): Promise<Author> {

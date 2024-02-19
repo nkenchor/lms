@@ -50,21 +50,29 @@ export class GenreRepository implements IGenreRepositoryPort {
   }
 
   //get genre by name
-  async getGenreByName(name: string): Promise<Genre> {
-    // Using a regex to search for genres that contain the 'name' string, case-insensitive
-    const genre = await this.getCollection().findOne({ name: { $regex: name, $options: 'i' } });
-  
-    if (!genre) {
-      const errorMessage = `Genre not found for name: ${name}`;
-      logEvent("ERROR", errorMessage);
-      throw new AppError(ErrorType.NoRecordError, errorMessage);
+  async getGenreByName(name: string, page: number, pageSize: number): Promise<{ genres: Genre[]; total: number }> {
+    logEvent("INFO", `Getting genres by name: ${name}`);
+    try {
+        const skip = (page - 1) * pageSize;
+        let query = { name: { $regex: name, $options: 'i' } }; // Case-insensitive search for the name
+
+
+        const [genres, total] = await Promise.all([
+            this.getCollection().find(query).skip(skip).limit(pageSize).toArray(), // Convert cursor to array
+            this.getCollection().countDocuments(query),
+        ]);
+
+        return { genres, total };
+    } catch (error) {
+        console.error("Error fetching genres by name:", error);
+        logEvent("ERROR", `Unable to fetch genres by name: ${name}. ` + error);
+        throw new AppError(ErrorType.ServerError, `Unable to fetch genres by name: ${name}. ` + error);
     }
-  
-    return genre;
-  }
+}
+
   
  //update genre
-  async updateGenre(genreReference: string, updatedGenre: Genre): Promise<Genre> {
+  async updateGenre(genreReference: string, updatedGenre:  Partial<Genre>): Promise<Genre> {
     const collection: Collection<Genre> = this.getCollection();
     
     // Attempt to update the genre directly without a preliminary fetch

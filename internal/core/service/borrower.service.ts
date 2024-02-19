@@ -21,8 +21,8 @@ export class BorrowerService implements IBorrowerServicePort {
   }
 
   //gets borrower by name
-  async getBorrowerByName(name: string): Promise<Borrower> {
-    return this.borrowerRepository.getBorrowerByName(name);
+  async getBorrowerByName(name: string,page: number, pageSize: number): Promise<{ borrowers: Borrower[]; total: number }>  {
+    return this.borrowerRepository.getBorrowerByName(name,page,pageSize);
   }
 
   //creates borrower

@@ -9,5 +9,5 @@ export interface IGenreRepositoryPort {
   updateGenre(genreReference: string, updatedGenre: Genre): Promise<Genre>;
   deleteGenre(genreReference: string): Promise<boolean>;
   softDeleteGenre(genreReference: string): Promise<boolean>;
-  getGenreByName(name: string): Promise<Genre>
+  getGenreByName(name: string,page: number, pageSize: number): Promise<{ genres: Genre[]; total: number }>;
 }

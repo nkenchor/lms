@@ -11,5 +11,5 @@ export interface IAuthorServicePort {
   updateAuthor(authorReference: string, updatedAuthor: IUpdateAuthorDto): Promise<Author>;
   deleteAuthor(authorReference: string): Promise<boolean>;
   softDeleteAuthor(authorReference: string): Promise<boolean>;
-  getAuthorByName(name: string): Promise<Author>
+  getAuthorByName(name: string,page: number, pageSize: number): Promise<{ authors: Author[]; total: number }>;
 }

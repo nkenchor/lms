@@ -9,5 +9,5 @@ export interface IAuthorRepositoryPort {
   updateAuthor(authorReference: string, updatedAuthor: Author): Promise<Author>;
   deleteAuthor(authorReference: string): Promise<boolean>;
   softDeleteAuthor(authorReference: string): Promise<boolean>;
-  getAuthorByName(name: string): Promise<Author>
+  getAuthorByName(name: string,page: number, pageSize: number): Promise<{ authors: Author[]; total: number }>;
 }

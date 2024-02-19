@@ -51,26 +51,35 @@ export class AuthorRepository implements IAuthorRepositoryPort {
     }
     return author;
   }
-  async getAuthorByName(name: string): Promise<Author> {
-    // Search for authors where either the first name or the last name contains the 'name' string, case-insensitive
-    const author = await this.getCollection().findOne({
-      $or: [
-        { firstName: { $regex: name, $options: 'i' } },
-        { lastName: { $regex: name, $options: 'i' } }
-      ]
-    });
-  
-    if (!author) {
-      const errorMessage = `Author not found for name: ${name}`;
-      logEvent("ERROR", errorMessage);
-      throw new AppError(ErrorType.NoRecordError, errorMessage);
+  async getAuthorByName(name: string, page: number, pageSize: number): Promise<{ authors: Author[]; total: number }> {
+    logEvent("INFO", "Getting all authors with name: " + name);
+    try {
+        const skip = (page - 1) * pageSize;
+        let query = {
+            $or: [
+                { firstName: { $regex: name, $options: 'i' } },
+                { lastName: { $regex: name, $options: 'i' } }
+            ]
+        }; // Case-insensitive search for the name in both firstName and lastName
+
+        // Use Promise.all to execute both queries in parallel
+        const [authors, total] = await Promise.all([
+            this.getCollection().find(query).skip(skip).limit(pageSize).toArray(), // Convert cursor to array
+            this.getCollection().countDocuments(query),
+        ]);
+
+        // No need to throw an error for empty list, as it's a valid scenario
+        return { authors, total };
+    } catch (error) {
+        console.error("Error fetching authors:", error);
+        logEvent("ERROR", 'Unable to fetch authors. ' + error);
+        throw new AppError(ErrorType.ServerError, 'Unable to fetch authors. ' + error);
     }
-  
-    return author;
-  }
+}
+
   
 
-  async updateAuthor(authorReference: string, updatedAuthor: Author): Promise<Author> {
+  async updateAuthor(authorReference: string, updatedAuthor:  Partial<Author>): Promise<Author> {
     const collection: Collection<Author> = this.getCollection();
     
     // Attempt to update the author directly without a preliminary fetch

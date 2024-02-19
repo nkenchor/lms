@@ -1,6 +1,12 @@
 import { randomUUID } from "crypto";
 
 export class Author {
+  some(arg0: (author: any) => boolean): any {
+    throw new Error('Method not implemented.');
+  }
+  length(length: any) {
+    throw new Error('Method not implemented.');
+  }
   authorReference: string;
   firstName: string; // Required
   lastName: string; // Required

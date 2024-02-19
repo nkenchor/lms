@@ -4,6 +4,12 @@ import { logEvent } from "../../../adapter/middleware/log.middleware";
 import { AppError, ErrorType } from "../../../adapter/helper/error.helper";
 
 export class Borrower {
+  length(length: any) {
+    throw new Error('Method not implemented.');
+  }
+  some(arg0: (b: any) => boolean): any {
+    throw new Error('Method not implemented.');
+  }
   borrowerReference: string;
   firstName: string;
   lastName: string;

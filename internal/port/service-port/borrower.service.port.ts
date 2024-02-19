@@ -11,7 +11,7 @@ export interface IBorrowerServicePort {
   updateBorrower(borrowerReference: string, updatedBorrower: IUpdateBorrowerDto): Promise<Borrower>;
   deleteBorrower(borrowerReference: string): Promise<boolean>;
   softDeleteBorrower(borrowerReference: string): Promise<boolean>;
-  getBorrowerByName(name: string): Promise<Borrower>
+  getBorrowerByName(name: string,page: number, pageSize: number): Promise<{ borrowers: Borrower[]; total: number }>;
   borrowBook(borrowerReference: string,bookBorrowed: BookBorrowed): Promise<boolean>
   returnBook(borrowerReference: string,bookReference: string, returnDate: Date): Promise<boolean>
 }

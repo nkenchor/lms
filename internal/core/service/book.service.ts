@@ -31,8 +31,8 @@ export class BookService implements IBookServicePort {
   }
 
   //get book by name
-  async getBookByName(name: string): Promise<Book> {
-    return this.bookRepository.getBookByName(name);
+  async getBookByTitle(name: string,page: number, pageSize: number): Promise<{ books: Book[]; total: number }>  {
+    return this.bookRepository.getBookByTitle(name,page, pageSize);
   }
 
   //create book
